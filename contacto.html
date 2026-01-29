@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Contacto | Netxia - Consultoría en IA y Ciberseguridad</title>
+    <meta name="description" content="Contáctanos para una consultoría gratuita en IA, Ciberseguridad y Transformación Digital. Respuesta en 24 horas.">
+    <link rel="canonical" href="https://netxia.cl/contacto">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0A0E27;
+            --primary-blue: #00D4FF;
+            --accent-cyber: #00FF88;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --bg-dark: #0A0E27;
+            --bg-card: #141824;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient-cyber: linear-gradient(135deg, #00D4FF 0%, #00FF88 100%);
+            --shadow-md: 0 4px 20px rgba(0, 212, 255, 0.15);
+            --shadow-lg: 0 10px 40px rgba(0, 212, 255, 0.25);
+            --transition-base: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.25rem 5%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .hero-small {
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10rem 5% 4rem;
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
+            text-align: center;
+        }
+
+        .hero-small h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1rem;
+        }
+
+        .gradient-text {
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-small p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-section {
+            padding: 6rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .contact-form-container {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all var(--transition-base);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300D4FF'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient-cyber);
+            border: none;
+            border-radius: 12px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .form-submit:active {
+            transform: translateY(0);
+        }
+
+        .form-note {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-cyber);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition-base);
+        }
+
+        .info-card a:hover {
+            color: var(--accent-cyber);
+        }
+
+        .response-time {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary-blue);
+            margin-top: 2rem;
+        }
+
+        .response-time h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .response-time p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-card);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 968px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">NETXIA</a>
+            <ul class="nav-links">
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/#proyectos">Casos de Éxito</a></li>
+                <li><a href="/#nosotros">Nosotros</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-small">
+        <div>
+            <h1>Hablemos de tu <span class="gradient-text">Proyecto</span></h1>
+            <p>Responderemos en menos de 24 horas. Consultoría inicial gratuita.</p>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-grid">
+            <div class="contact-form-container">
+                <div class="form-header">
+                    <h2>Cuéntanos tu Desafío</h2>
+                    <p>Completa el formulario y un experto se contactará contigo</p>
+                </div>
+
+                <form id="contactForm" action="#" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre">Nombre *</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Tu nombre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="empresa">Empresa *</label>
+                            <input type="text" id="empresa" name="empresa" class="form-control" placeholder="Nombre de tu empresa" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="+56 9 1234 5678">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="servicio">Servicio de Interés *</label>
+                        <select id="servicio" name="servicio" class="form-control" required>
+                            <option value="">Selecciona un servicio</option>
+                            <option value="ia">Inteligencia Artificial & Machine Learning</option>
+                            <option value="ciberseguridad">Ciberseguridad Avanzada</option>
+                            <option value="cloud">Cloud & DevOps</option>
+                            <option value="data">Data & Analytics</option>
+                            <option value="transformacion">Transformación Digital</option>
+                            <option value="ecommerce">E-Commerce</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="presupuesto">Presupuesto Estimado</label>
+                        <select id="presupuesto" name="presupuesto" class="form-control">
+                            <option value="">Selecciona un rango</option>
+                            <option value="5-10k">$5,000 - $10,000</option>
+                            <option value="10-25k">$10,000 - $25,000</option>
+                            <option value="25-50k">$25,000 - $50,000</option>
+                            <option value="50k+">$50,000+</option>
+                            <option value="no-definido">Aún no definido</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensaje">Cuéntanos sobre tu proyecto *</label>
+                        <textarea id="mensaje" name="mensaje" class="form-control" placeholder="Describe tu desafío tecnológico, objetivos y cualquier información relevante..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="form-submit">Enviar Consulta →</button>
+
+                    <p class="form-note">
+                        * Campos obligatorios. Al enviar este formulario, aceptas nuestra política de privacidad.
+                    </p>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <div class="info-card">
+                    <div class="info-icon">📞</div>
+                    <h3>Teléfono</h3>
+                    <p>Llámanos de Lunes a Viernes</p>
+                    <a href="tel:+56989024643">+56 9 8902 4643</a>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p>Escríbenos directamente</p>
+                    <a href="mailto:contacto@netxia.cl">contacto@netxia.cl</a>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">💬</div>
+                    <h3>WhatsApp</h3>
+                    <p>Chatea con nosotros ahora</p>
+                    <a href="https://wa.me/56989024643" target="_blank" rel="noopener">Iniciar Chat</a>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">📍</div>
+                    <h3>Ubicación</h3>
+                    <p>Santiago, Chile</p>
+                    <a href="https://www.linkedin.com/company/netxia-chile/" target="_blank" rel="noopener">Ver en LinkedIn</a>
+                </div>
+
+                <div class="response-time">
+                    <h4>⚡ Respuesta Rápida Garantizada</h4>
+                    <p>Respondemos todas las consultas en menos de 24 horas hábiles. Consultas urgentes por WhatsApp reciben respuesta inmediata.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Netxia. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Aquí iría la lógica de envío real (API, email service, etc.)
+            const formData = new FormData(this);
+            
+            // Simulación de envío exitoso
+            alert('¡Gracias por contactarnos! Nos pondremos en contacto contigo en menos de 24 horas.');
+            this.reset();
+            
+            // En producción, reemplazar con:
+            // fetch('/api/contact', {
+            //     method: 'POST',
+            //     body: formData
+            // }).then(...);
+        });
+    </script>
+</body>
+</html>
