@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia 📖 | Netxia - 10 Años Soñando Tecnología</title>
+    <meta name="description" content="De una idea en 2015 a transformar empresas líderes en Chile. La historia humana detrás de Netxia.">
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0A0E27;
+            --primary-blue: #00D4FF;
+            --accent-cyber: #00FF88;
+            --accent-warm: #FFB84D;
+            --accent-purple: #A259FF;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --bg-dark: #0A0E27;
+            --bg-card: #141824;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient-cyber: linear-gradient(135deg, #00D4FF 0%, #00FF88 100%);
+            --transition-base: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.25rem 5%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10rem 5% 4rem;
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '✨';
+            position: absolute;
+            font-size: 25rem;
+            opacity: 0.03;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .gradient-text {
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-tagline {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .hero-intro {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 5rem 5%;
+        }
+
+        .story-section {
+            margin-bottom: 5rem;
+        }
+
+        h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .story-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .highlight p {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            line-height: 1.8;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin: 3rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--accent-purple) 100%);
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.5rem;
+            top: 0.5rem;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-cyber);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--bg-dark), 0 0 0 6px var(--accent-cyber);
+        }
+
+        .timeline-year {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-cyber);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .timeline-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .timeline-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .value-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .value-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .value-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .team-intro {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            margin: 3rem 0;
+        }
+
+        .team-intro h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .team-intro p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .member-photo {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-cyber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .fun-facts {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(162, 89, 255, 0.05) 100%);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            margin: 4rem 0;
+        }
+
+        .fun-facts h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .fact {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .fact-number {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .fact-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            background: var(--bg-card);
+            padding: 4rem;
+            border-radius: 30px;
+            border: 2px solid var(--primary-blue);
+            text-align: center;
+            margin: 5rem 0;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1.25rem 2.5rem;
+            background: var(--gradient-cyber);
+            color: var(--primary-dark);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .timeline { padding-left: 2rem; }
+            .timeline-item::before { left: -2.5rem; }
+            .values-grid { grid-template-columns: 1fr; }
+            .team-photos { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">NETXIA</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Volver</a></li>
+                <li><a href="blog/blog-tendencias-ia-2026.html">Blog</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1><span class="gradient-text">Sueña Tecnología</span> ✨</h1>
+            <p class="hero-tagline">"La historia de cómo tres amigos decidieron hacer tecnología diferente"</p>
+            <p class="hero-intro">
+                No somos una corporación con oficinas en 47 países. Somos un equipo chico que hace cosas grandes. 
+                Esta es nuestra historia, con sus altos, sus bajos, y mucho café de por medio.
+            </p>
+        </div>
+    </section>
+
+    <article class="content">
+        <section class="story-section">
+            <h2>🌱 Los Comienzos (2015)</h2>
+            <p class="story-text">
+                Todo empezó en 2015, en una cafetería de Providencia. Francisco, Rafael y Carolina compartían una frustración: 
+                veían cómo las empresas pagaban fortunas por soluciones tecnológicas complicadas, lentas y que nadie entendía.
+            </p>
+            <p class="story-text">
+                "¿Y si hacemos esto diferente?", preguntó Francisco entre sorbo y sorbo de café. "¿Qué tal si creamos 
+                tecnología que la gente realmente entienda y pueda usar?". Rafael sacó una servilleta (sí, cliché, pero real) 
+                y empezó a dibujar. Carolina les dijo que estaban locos. Pero les gustó la locura.
+            </p>
+
+            <div class="highlight">
+                <p>
+                    <strong> NETXIA (Consultores)</strong>;
+					Nace de la urgente necesidad de proveer a las empresas y particulares de un marco de Soluciones Tecnológicas y Automatizaciones de procesos de alta calidad profesional.
+                </p>
+            </div>
+        </section>
+
+        <section class="story-section">
+            <h2>📖 Nuestro Viaje</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2015</div>
+                    <div class="timeline-content">
+                        <h3>El Primer Cliente (¡que confió en nosotros!)</h3>
+                        <p>
+                            CCHC nos dio la oportunidad. Necesitaban un sistema de reserva de salas. Simple, ¿no? 
+                            Pues fue nuestro primer gran aprendizaje: hasta lo simple puede ser complejo si no lo piensas bien. 
+                            Entregamos en tiempo y forma. El cliente quedó feliz. Nosotros, exhaustos pero orgullosos.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2016</div>
+                    <div class="timeline-content">
+                        <h3>Llegamos a las Grandes Ligas</h3>
+                        <p>
+                            Walmart y Falabella nos dieron proyectos. ¿Presión? Toda. ¿Síndrome del impostor? A full. 
+                            Pero entregamos sistemas que funcionan hasta el día de hoy. Aprendimos que el tamaño de la 
+                            empresa no importa: lo que importa es resolver el problema real.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2017-2018</div>
+                    <div class="timeline-content">
+                        <h3>La Era de la Automatización</h3>
+                        <p>
+                            Descubrimos el RPA (bots que hacen tareas repetitivas). Isban, Mall Plaza, ACL... 
+                            Automatizamos procesos que liberaron cientos de horas-humano. Ver cómo un bot hace en 10 minutos 
+                            lo que una persona tardaba 8 horas en hacer nunca deja de ser mágico.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2020-2023</div>
+                    <div class="timeline-content">
+                        <h3>Proyectos enfocados a QA</h3>
+                        <p>
+                           Nos enfocamos en servicios de aseguramiento y control de calidad a lo largo del ciclo de vida del desarrollo de software, mediante procesos, metodologías, herramientas y pruebas técnicas destinadas a garantizar que el producto cumpla estándares de calidad funcional, técnica y de experiencia de usuario.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2024-2026</div>
+                    <div class="timeline-content">
+                        <h3>IA, Ciberseguridad y el Futuro</h3>
+                        <p>
+                            Nos especializamos en IA aplicada 
+                            y ciberseguridad (porque si tienes IA sin seguridad, es como tener un Ferrari sin frenos). 
+                            Hoy ayudamos a empresas a adoptar tecnología de forma inteligente, segura y rentable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="story-section">
+            <h2>💭 Nuestra Filosofía</h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <span class="value-icon">🎯</span>
+                    <h3>Simplicidad</h3>
+                    <p>
+                        La mejor solución no es la más compleja. Es la que funciona y la que tu equipo puede usar 
+                        sin manual de 200 páginas.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <span class="value-icon">🤝</span>
+                    <h3>Honestidad Brutal</h3>
+                    <p>
+                        Si tu problema no necesita IA, te lo decimos. Si hay una solución más barata, te la mostramos. 
+                        Preferimos perder un proyecto que tu confianza.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <span class="value-icon">⚡</span>
+                    <h3>Agilidad Real</h3>
+                    <p>
+                        No confundas "ágil" con "apurado". Iteramos rápido, pero con criterio. Entregamos valor rápido, 
+                        pero bien hecho.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <span class="value-icon">💡</span>
+                    <h3>Innovación Práctica</h3>
+                    <p>
+                        Nos encantan las tecnologías nuevas, pero solo las usamos si resuelven un problema real. 
+                        No hacemos IA "porque sí".
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="story-section">
+            <div class="team-intro">
+                <h3>👥 El Equipo (Los Humanos Detrás del Código)</h3>
+				<!--
+                <p>
+                    Somos tres personas con personalidades muy diferentes, lo que nos hace funcionar. Francisco 
+                    es el arquitecto que puede programar dormido. Rafael es el que mantiene todo organizado 
+                    (alguien tiene que hacerlo). Carolina es quien se asegura de que lo que hacemos no solo funcione, 
+                    sino que se vea bien y sea usable.
+                </p>
+                <p>
+                    No tenemos oficina fancy con futbolito. Trabajamos remoto, cada uno desde su espacio. 
+                    Pero nos reunimos semanalmente (virtualmente) y cuando hace falta, en persona con hartos 
+                    cafés de por medio.
+                </p>
+				--!>
+                <div class="team-photos">
+                    <div class="team-member">
+                        <div class="member-photo">FB</div>
+                        <div class="member-name">Francisco Barrera</div>
+                        <div class="member-role">Lead Developer</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-photo">RB</div>
+                        <div class="member-name">Rafael Briones</div>
+                        <div class="member-role">Project Manager</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-photo">AL</div>
+                        <div class="member-name">Aharon Lizana</div>
+                        <div class="member-role">Lead Designer</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="fun-facts">
+            <h3>🎲 Algunos Números (Porque Nos Gustan los Datos)</h3>
+            <div class="facts-grid">
+                <div class="fact">
+                    <span class="fact-number">10+</span>
+                    <span class="fact-label">Años haciendo esto</span>
+                </div>
+                <div class="fact">
+                    <span class="fact-number">200+</span>
+                    <span class="fact-label">Proyectos entregados</span>
+                </div>
+                <div class="fact">
+                    <span class="fact-number">∞</span>
+                    <span class="fact-label">Cafés consumidos</span>
+                </div>
+                <div class="fact">
+                    <span class="fact-number">95%</span>
+                    <span class="fact-label">Clientes que vuelven</span>
+                </div>
+                <div class="fact">
+                    <span class="fact-number">3</span>
+                    <span class="fact-label">Personas apasionadas</span>
+                </div>
+                <div class="fact">
+                    <span class="fact-number">$50M+</span>
+                    <span class="fact-label">En ROI para clientes</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="story-section">
+            <h2>🚀 ¿Y Ahora Qué?</h2>
+            <p class="story-text">
+                Seguimos siendo los mismos: un equipo chico con ganas de hacer cosas grandes. La diferencia es que 
+                ahora tenemos 10+ años de experiencia, tropezones aprendidos y casos de éxito que nos respaldan.
+            </p>
+            <p class="story-text">
+                No queremos ser la consultora más grande de Chile. Queremos ser la que mejor entiende a sus clientes, 
+                la que responde rápido, la que explica claro, y la que entrega resultados medibles.
+            </p>
+            <p class="story-text">
+                Si te identificas con esta forma de trabajar, charlemos. Prometemos café (virtual) gratis y 
+                una conversación honesta sobre cómo la tecnología puede ayudar a tu empresa.
+            </p>
+        </section>
+
+        <div class="cta-section">
+            <h2>¿Quieres Ser Parte de la Historia? 🌟</h2>
+            <p>
+                Estamos siempre buscando proyectos desafiantes y clientes que valoren la honestidad tanto como nosotros. 
+                Si tienes un proyecto en mente, hablemos.
+            </p>
+            <a href="contacto.html" class="btn">Conversemos →</a>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Netxia. Hecho con ❤️ y mucho ☕ en Santiago, Chile | <a href="/" style="color: var(--text-secondary);">Volver al Inicio</a></p>
+    </footer>
+</body>
+</html>

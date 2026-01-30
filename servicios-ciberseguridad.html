@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciberseguridad Avanzada | Netxia - Protección 24/7</title>
+    <meta name="description" content="Servicios de ciberseguridad empresarial en Chile: Zero Trust, SOC 24/7, pentesting, cumplimiento ISO 27001. Protección garantizada.">
+    <link rel="canonical" href="https://netxia.cl/servicios/ciberseguridad">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0A0E27;
+            --primary-blue: #00D4FF;
+            --accent-cyber: #00FF88;
+            --accent-danger: #FF3366;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --bg-dark: #0A0E27;
+            --bg-card: #141824;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient-cyber: linear-gradient(135deg, #00D4FF 0%, #00FF88 100%);
+            --shadow-md: 0 4px 20px rgba(0, 212, 255, 0.15);
+            --shadow-lg: 0 10px 40px rgba(0, 212, 255, 0.25);
+            --transition-base: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.25rem 5%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            padding: 10rem 5% 4rem;
+            background: linear-gradient(135deg, #0A0E27 0%, #0F1A2E 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 140%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.12) 0%, transparent 70%);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 50px;
+            color: var(--primary-blue);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .gradient-cyber {
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-cyber);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-cyber);
+            color: var(--primary-dark);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        section {
+            padding: 6rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 50px;
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-cyber);
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-cyber);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            list-style: none;
+        }
+
+        .service-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .service-features li::before {
+            content: '✓';
+            color: var(--accent-cyber);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .threats {
+            background: rgba(20, 24, 36, 0.3);
+            padding: 6rem 5%;
+        }
+
+        .threats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .threat-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .threat-card h4 {
+            color: var(--accent-danger);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .threat-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .certifications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .cert-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+
+        .cert-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-5px);
+        }
+
+        .cert-badge {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-cyber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .cert-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .cert-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .process-timeline {
+            max-width: 900px;
+            margin: 3rem auto 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            align-items: flex-start;
+        }
+
+        .timeline-marker {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-cyber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary-blue);
+        }
+
+        .timeline-content p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-answer {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 5rem 5%;
+            background: rgba(20, 24, 36, 0.3);
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+            border: 2px solid var(--primary-blue);
+            border-radius: 30px;
+            padding: 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-box h2 {
+            margin-bottom: 1rem;
+        }
+
+        .cta-box p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-stats { flex-direction: column; gap: 1.5rem; }
+            .services-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">NETXIA</a>
+            <ul class="nav-links">
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/#proyectos">Casos de Éxito</a></li>
+                <li><a href="/#nosotros">Nosotros</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-tag">CIBERSEGURIDAD EMPRESARIAL</span>
+            <h1>Protege tu Empresa con <span class="gradient-cyber">Seguridad 24/7</span></h1>
+            <p>
+                Implementamos arquitecturas Zero Trust, SOC dedicado y pentesting continuo. 
+                Cumplimiento normativo garantizado y respuesta a incidentes en tiempo real.
+            </p>
+            <a href="#contacto-cta" class="btn btn-primary">Assessment Gratuito →</a>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Uptime SLA</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Monitoreo SOC</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Incidentes Críticos</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-tag">SERVICIOS</span>
+            <h2>Protección Integral Multicapa</h2>
+            <p class="section-subtitle">
+                Soluciones de ciberseguridad adaptadas a las amenazas de 2026
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🛡️</div>
+                <h3>Zero Trust Architecture</h3>
+                <p>
+                    Implementación completa de arquitectura Zero Trust con verificación continua, 
+                    microsegmentación y mínimo privilegio en toda tu infraestructura.
+                </p>
+                <ul class="service-features">
+                    <li>Autenticación multifactor (MFA)</li>
+                    <li>Microsegmentación de red</li>
+                    <li>Gestión de identidades (IAM)</li>
+                    <li>Conditional access policies</li>
+                    <li>Continuous verification</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">👁️</div>
+                <h3>SOC 24/7 con IA</h3>
+                <p>
+                    Centro de operaciones de seguridad dedicado con monitoreo continuo, 
+                    detección de amenazas con ML y respuesta automatizada a incidentes.
+                </p>
+                <ul class="service-features">
+                    <li>Monitoreo 24/7/365</li>
+                    <li>SIEM avanzado (Splunk/Sentinel)</li>
+                    <li>Threat intelligence en tiempo real</li>
+                    <li>Incident response automatizado</li>
+                    <li>Reportes ejecutivos semanales</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔍</div>
+                <h3>Pentesting & Red Team</h3>
+                <p>
+                    Auditorías de seguridad ofensivas que simulan ataques reales para identificar 
+                    vulnerabilidades antes que los atacantes.
+                </p>
+                <ul class="service-features">
+                    <li>Pentesting aplicaciones web</li>
+                    <li>Infraestructura y redes</li>
+                    <li>Social engineering tests</li>
+                    <li>Red Team exercises</li>
+                    <li>Remediación guiada</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔐</div>
+                <h3>Gestión de Vulnerabilidades</h3>
+                <p>
+                    Escaneo continuo, priorización inteligente y remediación de vulnerabilidades 
+                    en aplicaciones, infraestructura y endpoints.
+                </p>
+                <ul class="service-features">
+                    <li>Vulnerability scanning continuo</li>
+                    <li>Patch management automatizado</li>
+                    <li>Priorización basada en riesgo</li>
+                    <li>Compliance tracking</li>
+                    <li>SLA de remediación</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">📜</div>
+                <h3>Cumplimiento Normativo</h3>
+                <p>
+                    Asesoría y auditoría para cumplir con ISO 27001, NIS2, GDPR, SOC 2 
+                    y otras normativas de seguridad y privacidad.
+                </p>
+                <ul class="service-features">
+                    <li>Gap analysis inicial</li>
+                    <li>Roadmap de cumplimiento</li>
+                    <li>Implementación de controles</li>
+                    <li>Auditorías internas</li>
+                    <li>Certificación asistida</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🎓</div>
+                <h3>Security Awareness</h3>
+                <p>
+                    Programas de capacitación y concientización para tu equipo. El eslabón 
+                    más débil son las personas, los entrenamos para ser tu primera línea de defensa.
+                </p>
+                <ul class="service-features">
+                    <li>Phishing simulations</li>
+                    <li>Talleres presenciales</li>
+                    <li>E-learning plataforma</li>
+                    <li>Evaluaciones periódicas</li>
+                    <li>Métricas de progreso</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="threats">
+        <div class="section-header">
+            <span class="section-tag">AMENAZAS</span>
+            <h2>Protección Contra Riesgos Reales</h2>
+            <p class="section-subtitle">
+                Las amenazas que mitigamos activamente para nuestros clientes
+            </p>
+        </div>
+
+        <div class="threats-grid">
+            <div class="threat-card">
+                <h4>⚠️ Ransomware</h4>
+                <p>Detección y bloqueo de ransomware antes de cifrar datos. Backup inmutable y recovery testing periódico.</p>
+            </div>
+
+            <div class="threat-card">
+                <h4>⚠️ Phishing & BEC</h4>
+                <p>Filtrado avanzado de emails maliciosos, simulaciones y capacitación continua del personal.</p>
+            </div>
+
+            <div class="threat-card">
+                <h4>⚠️ DDoS</h4>
+                <p>Mitigación de ataques DDoS volumétricos y de aplicación con WAF cloud y anycast network.</p>
+            </div>
+
+            <div class="threat-card">
+                <h4>⚠️ Malware & APTs</h4>
+                <p>Detección de malware avanzado y amenazas persistentes con EDR/XDR de última generación.</p>
+            </div>
+
+            <div class="threat-card">
+                <h4>⚠️ Insider Threats</h4>
+                <p>Monitoreo de comportamiento anómalo, DLP y gestión de privilegios para prevenir amenazas internas.</p>
+            </div>
+
+            <div class="threat-card">
+                <h4>⚠️ Supply Chain Attacks</h4>
+                <p>Evaluación de terceros, SCA de software y monitoreo de dependencias vulnerables.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-tag">CERTIFICACIONES</span>
+            <h2>Compliance y Certificaciones</h2>
+            <p class="section-subtitle">
+                Te ayudamos a cumplir con los estándares más exigentes
+            </p>
+        </div>
+
+        <div class="certifications">
+            <div class="cert-card">
+                <div class="cert-badge">🏆</div>
+                <h4>ISO 27001</h4>
+                <p>Implementación y certificación del estándar internacional de gestión de seguridad de la información</p>
+            </div>
+
+            <div class="cert-card">
+                <div class="cert-badge">🇪🇺</div>
+                <h4>NIS2 Directive</h4>
+                <p>Cumplimiento con la directiva europea de seguridad de redes y sistemas de información</p>
+            </div>
+
+            <div class="cert-card">
+                <div class="cert-badge">🔒</div>
+                <h4>SOC 2 Type II</h4>
+                <p>Auditorías y certificación SOC 2 para servicios cloud y proveedores de tecnología</p>
+            </div>
+
+            <div class="cert-card">
+                <div class="cert-badge">🛡️</div>
+                <h4>GDPR</h4>
+                <p>Cumplimiento con el reglamento de protección de datos de la Unión Europea</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-tag">PROCESO</span>
+            <h2>Metodología de Auditoría</h2>
+            <p class="section-subtitle">
+                Nuestro enfoque estructurado de 5 fases
+            </p>
+        </div>
+
+        <div class="process-timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker">1</div>
+                <div class="timeline-content">
+                    <h4>Discovery & Scoping</h4>
+                    <p>Entendemos tu infraestructura, identificamos activos críticos y definimos el alcance de la auditoría. Incluye entrevistas con stakeholders y revisión de documentación.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">2</div>
+                <div class="timeline-content">
+                    <h4>Vulnerability Assessment</h4>
+                    <p>Escaneo automatizado de toda tu infraestructura, aplicaciones web, APIs y endpoints. Identificamos vulnerabilidades conocidas y configuraciones inseguras.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">3</div>
+                <div class="timeline-content">
+                    <h4>Penetration Testing</h4>
+                    <p>Explotación manual de vulnerabilidades críticas para demostrar impacto real. Simulamos ataques que un adversario real ejecutaría.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">4</div>
+                <div class="timeline-content">
+                    <h4>Reporting & Prioritization</h4>
+                    <p>Entregamos reporte ejecutivo y técnico detallado. Priorizamos vulnerabilidades por criticidad y negocio. Incluye POCs y evidencias.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">5</div>
+                <div class="timeline-content">
+                    <h4>Remediation Support</h4>
+                    <p>Asistencia en la remediación de hallazgos críticos. Re-testing post-remediation y validación de fixes. Roadmap de seguridad continua.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-tag">FAQ</span>
+            <h2>Preguntas Frecuentes</h2>
+        </div>
+
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Cuánto cuesta un servicio de ciberseguridad?
+                </div>
+                <div class="faq-answer">
+                    Varía según el alcance. Un assessment inicial cuesta desde $5,000 USD. SOC 24/7 manejado desde $3,500/mes. Pentesting desde $8,000. Ofrecemos assessment gratuito para cotizar servicios específicos.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Qué tan rápido pueden responder a un incidente?
+                </div>
+                <div class="faq-answer">
+                    Nuestro SOC opera 24/7/365. Incidentes críticos tienen SLA de respuesta de 15 minutos. Incidentes de severidad media 1 hora. Contamos con runbooks automatizados para respuesta inmediata.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Necesito tener un equipo de seguridad interno?
+                </div>
+                <div class="faq-answer">
+                    No. Podemos ser tu equipo de seguridad completo (vCISO + SOC) o complementar tu equipo existente. Muchos clientes empiezan externalizando completamente y luego construyen capacidades internas.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Cómo garantizan que no afectarán mi operación?
+                </div>
+                <div class="faq-answer">
+                    Todo pentesting se realiza en ambientes de staging o con throttling en producción. Coordinamos ventanas de mantenimiento. Nuestros consultores tienen +10 años experiencia y certificaciones OSCP/OSCE.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Qué pasa si encuentran vulnerabilidades críticas?
+                </div>
+                <div class="faq-answer">
+                    Notificamos inmediatamente vía canal seguro. Priorizamos remediation y ofrecemos soporte técnico para parchear. En casos extremos, podemos aplicar mitigaciones temporales mientras se desarrolla el fix permanente.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Cómo se comparan con un Big4 o consultora grande?
+                </div>
+                <div class="faq-answer">
+                    Ofrecemos la misma calidad técnica a fracción del costo. Nuestro equipo tiene experiencia en Big4 pero con estructura lean. Menos overhead, más eficiencia. Relación directa con consultores senior, no juniors.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Incluyen seguro cibernético?
+                </div>
+                <div class="faq-answer">
+                    No proveemos seguros directamente, pero nuestros reportes y postura de seguridad ayudan a conseguir mejores primas. Trabajamos con brokers especializados y podemos conectarte con partners aseguradores.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contacto-cta">
+        <div class="cta-box">
+            <h2>¿Listo para Fortalecer tu Seguridad?</h2>
+            <p>
+                Agenda un assessment gratuito de 30 minutos. Revisaremos tu postura actual de seguridad 
+                y diseñaremos un roadmap personalizado.
+            </p>
+            <a href="contacto.html" class="btn btn-primary">Assessment Gratuito →</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Netxia. Todos los derechos reservados. | <a href="/" style="color: var(--text-secondary);">Volver al Inicio</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso de Éxito: Mall Plaza - Automatización Financiera con IA | Netxia</title>
+    <meta name="description" content="Cómo automatizamos conciliaciones financieras de Mall Plaza con IA, logrando 85% reducción en tiempos y $2.5M ahorro anual.">
+    <link rel="canonical" href="https://netxia.cl/casos-exito/mall-plaza-automatizacion">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0A0E27;
+            --primary-blue: #00D4FF;
+            --accent-ai: #A259FF;
+            --accent-success: #00FF88;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --bg-dark: #0A0E27;
+            --bg-card: #141824;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient-ai: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-md: 0 4px 20px rgba(162, 89, 255, 0.15);
+            --transition-base: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.25rem 5%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00D4FF 0%, #00FF88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            padding: 10rem 5% 4rem;
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .client-logo {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .gradient-ai {
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+        }
+
+        section {
+            padding: 5rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-success);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-box {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+        }
+
+        .content-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .content-box p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .content-box ul {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .content-box li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .content-box li::before {
+            content: '→';
+            color: var(--accent-success);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tech-badge {
+            padding: 0.5rem 1.25rem;
+            background: rgba(162, 89, 255, 0.1);
+            border: 1px solid var(--accent-ai);
+            border-radius: 50px;
+            color: var(--accent-ai);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin-top: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent-ai);
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-ai);
+            border-radius: 50%;
+        }
+
+        .timeline-month {
+            font-weight: 700;
+            color: var(--accent-ai);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+        }
+
+        .cta-section {
+            text-align: center;
+            background: rgba(20, 24, 36, 0.3);
+            padding: 4rem 5%;
+            border-radius: 30px;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: var(--gradient-ai);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all var(--transition-base);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(162, 89, 255, 0.5);
+        }
+
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-meta { flex-direction: column; gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">NETXIA</a>
+            <ul class="nav-links">
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/#proyectos">Casos de Éxito</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="client-logo">CASO DE ÉXITO: MALL PLAZA</div>
+            <h1>Automatización Financiera con <span class="gradient-ai">Inteligencia Artificial</span></h1>
+            <p style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 1rem;">
+                Cómo transformamos las conciliaciones contables de Mall Plaza con bots inteligentes, 
+                reduciendo tiempos en 85% y generando ahorros de $2.5M anuales.
+            </p>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Industria</span>
+                    <span class="meta-value">Retail & Inmobiliario</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Duración</span>
+                    <span class="meta-value">6 meses</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Tecnologías</span>
+                    <span class="meta-value">Python, RPA, ML</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Año</span>
+                    <span class="meta-value">2018</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Resultados Clave</h2>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-value">85%</span>
+                <span class="metric-label">Reducción en Tiempo de Conciliación</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">99.8%</span>
+                <span class="metric-label">Precisión en Procesos</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">$2.5M</span>
+                <span class="metric-label">Ahorro Anual</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">24/7</span>
+                <span class="metric-label">Operación Continua</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="content-box">
+            <h3>El Desafío</h3>
+            <p>
+                Mall Plaza, uno de los principales operadores de centros comerciales en Chile, enfrentaba un 
+                desafío crítico en su departamento financiero: las conciliaciones contables y financieras 
+                mensuales consumían más de 200 horas-hombre, con un equipo de 8 personas dedicadas exclusivamente 
+                a procesar datos de múltiples fuentes.
+            </p>
+            <p>
+                El proceso manual era propenso a errores humanos, generaba retrasos en reportes ejecutivos y 
+                requería revisiones múltiples. Los cierres mensuales tomaban hasta 5 días hábiles completos, 
+                impactando la toma de decisiones estratégicas.
+            </p>
+            <h3 style="margin-top: 2rem;">Problemas Específicos</h3>
+            <ul>
+                <li>Conciliaciones manuales entre 15+ sistemas diferentes</li>
+                <li>Alto riesgo de errores en cálculos complejos</li>
+                <li>Falta de visibilidad en tiempo real del estado financiero</li>
+                <li>Costos operativos elevados por trabajo repetitivo</li>
+                <li>Dificultad para escalar el proceso durante temporada alta</li>
+            </ul>
+        </div>
+
+        <div class="content-box">
+            <h3>La Solución</h3>
+            <p>
+                Implementamos un sistema de automatización inteligente basado en RPA (Robotic Process Automation) 
+                potenciado con Machine Learning para las conciliaciones financieras más complejas.
+            </p>
+            <h3 style="margin-top: 2rem;">Arquitectura de la Solución</h3>
+            <p>
+                Desarrollamos bots especializados que se conectan a los 15 sistemas fuente, extraen datos, 
+                aplican reglas de negocio complejas, detectan anomalías con ML y generan reportes automáticos. 
+                Todo el proceso se ejecuta en cloud con alta disponibilidad.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">UiPath RPA</span>
+                <span class="tech-badge">Scikit-learn</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">AWS Lambda</span>
+                <span class="tech-badge">Docker</span>
+            </div>
+            <h3 style="margin-top: 2rem;">Componentes Clave</h3>
+            <ul>
+                <li>Bot de extracción de datos multi-sistema</li>
+                <li>Motor de reglas de conciliación personalizable</li>
+                <li>Modelo ML para detección de anomalías</li>
+                <li>Dashboard en tiempo real para monitoreo</li>
+                <li>Sistema de alertas inteligentes</li>
+                <li>Generación automática de reportes ejecutivos</li>
+            </ul>
+        </div>
+
+        <div class="content-box">
+            <h3>Implementación</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-month">Mes 1: Discovery</div>
+                    <div class="timeline-desc">Mapeo de procesos actuales, identificación de pain points, definición de KPIs</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Mes 2-3: Desarrollo PoC</div>
+                    <div class="timeline-desc">Desarrollo de proof of concept para 3 tipos de conciliaciones prioritarias</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Mes 4: Expansión</div>
+                    <div class="timeline-desc">Desarrollo de bots para todos los procesos de conciliación</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Mes 5: Testing</div>
+                    <div class="timeline-desc">Testing exhaustivo, ajuste de modelos ML, validación con usuarios</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Mes 6: Go-Live</div>
+                    <div class="timeline-desc">Deployment en producción, capacitación de usuarios, monitoreo intensivo</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h3>Resultados e Impacto</h3>
+            <p>
+                La implementación generó un impacto transformador en el departamento financiero de Mall Plaza:
+            </p>
+            <ul>
+                <li>Tiempo de conciliación redujo de 200h a 30h mensuales (85% reducción)</li>
+                <li>Precisión aumentó de 96% a 99.8% en cálculos</li>
+                <li>Cierres mensuales ahora toman 1 día en vez de 5</li>
+                <li>Liberación de 6 personas para tareas de análisis de alto valor</li>
+                <li>Ahorro anual de $2.5M en costos operativos</li>
+                <li>Visibilidad en tiempo real del estado financiero</li>
+                <li>Detección proactiva de anomalías antes de que escalen</li>
+            </ul>
+            <h3 style="margin-top: 2rem;">Valor a Largo Plazo</h3>
+            <p>
+                Más allá del ahorro inmediato, Mall Plaza ganó capacidad de escalar sin incrementar headcount, 
+                mejoró la calidad de sus reportes financieros y redujo significativamente el riesgo de errores 
+                que podrían impactar decisiones estratégicas.
+            </p>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2 style="margin-bottom: 1rem;">¿Tu Empresa Tiene Procesos Similares?</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+            Si tu organización tiene procesos financieros, administrativos o operativos repetitivos, 
+            podemos ayudarte a automatizarlos con IA y generar ahorros similares.
+        </p>
+        <a href="contacto.html" class="btn">Agendar Consultoría Gratuita →</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Netxia. Todos los derechos reservados. | <a href="/" style="color: var(--text-secondary);">Volver al Inicio</a></p>
+    </footer>
+</body>
+</html>
