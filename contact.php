@@ -2,9 +2,9 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer-master/src/Exception.php';
+require 'PHPMailer-master/src/PHPMailer.php';
+require 'PHPMailer-master/src/SMTP.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -12,15 +12,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars($_POST['email'] ?? '');
     $mensaje = htmlspecialchars($_POST['mensaje'] ?? '');
 
+    // Validar campos requeridos
+    if (empty($nombre) || empty($email) || empty($mensaje)) {
+        http_response_code(400);
+        echo 'Error: Todos los campos son requeridos';
+        exit;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        http_response_code(400);
+        echo 'Error: Email inválido';
+        exit;
+    }
+
     $mail = new PHPMailer(true);
 
     try {
-        // Configuración SMTP (USA TU CORREO REAL)
+        // Configuración SMTP (leer credenciales de variables de entorno)
         $mail->isSMTP();
-        $mail->Host       = 'mail.netxia.cl'; // o smtp.gmail.com si usas Gmail
+        $mail->Host       = getenv('SMTP_HOST') ?: 'mail.netxia.cl';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'contacto@netxia.cl'; // correo que envía
-        $mail->Password   = 'TU_PASSWORD_AQUI';   // contraseña real o app password
+        $mail->Username   = getenv('SMTP_USER') ?: 'contacto@netxia.cl';
+        $mail->Password   = getenv('SMTP_PASS');
+        
+        if (!$mail->Password) {
+            throw new Exception('Credenciales SMTP no configuradas. Establece SMTP_PASS como variable de entorno.');
+        }
+        
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
