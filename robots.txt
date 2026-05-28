@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /blog/
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+
+Disallow: /php/
+Disallow: /data/
+Disallow: /logs/
+Disallow: /uploads/
+Disallow: /404.html
+Disallow: /403.html
+Disallow: /500.html
+
+Sitemap: https://netxia.cl/sitemap.xml

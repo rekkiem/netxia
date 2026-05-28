@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "tendencias-ia-2026",
+    "titulo": "Tendencias de IA 2026 que Toda Empresa Chilena Debe Conocer",
+    "resumen": "IA Agéntica, AutoML y Edge AI están redefiniendo cómo operan las empresas en Chile. Analizamos qué adoptar y por dónde empezar.",
+    "categoria": "Inteligencia Artificial",
+    "fecha": "2026-01-29",
+    "lectura": "12 min",
+    "autor": "Equipo Netxia",
+    "imagen_alt": "Diagrama de redes neurales con colores azul y cyan",
+    "url": "./blog/tendencias-ia-2026.html"
+  },
+  {
+    "slug": "ciberseguridad-empresas-chile",
+    "titulo": "Ciberseguridad para PYMEs Chilenas: Guía Práctica 2026",
+    "resumen": "El 68% de los ciberataques en Chile afectan a PYMEs. Descubre las medidas esenciales de protección con presupuesto acotado.",
+    "categoria": "Ciberseguridad",
+    "fecha": "2026-02-15",
+    "lectura": "8 min",
+    "autor": "Equipo Netxia",
+    "imagen_alt": "Escudo digital con candado representando seguridad informática",
+    "url": "./blog/ciberseguridad-empresas-chile.html"
+  },
+  {
+    "slug": "cloud-devops-chile-2026",
+    "titulo": "Cloud & DevOps en Chile: Cuándo Migrar y Qué Esperar",
+    "resumen": "Comparativa AWS vs Azure vs GCP para el mercado chileno, costos reales en CLP y casos de migración exitosa en retail y banca.",
+    "categoria": "Cloud & DevOps",
+    "fecha": "2026-03-10",
+    "lectura": "10 min",
+    "autor": "Equipo Netxia",
+    "imagen_alt": "Diagrama de arquitectura cloud con servidores interconectados",
+    "url": "./blog/cloud-devops-chile-2026.html"
+  }
+]

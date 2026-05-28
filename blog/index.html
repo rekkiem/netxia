@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Netxia | IA, Ciberseguridad y Cloud para Chile</title>
+  <meta name="description" content="Análisis, tendencias y guías prácticas sobre inteligencia artificial, ciberseguridad y cloud & DevOps para empresas chilenas.">
+  <link rel="canonical" href="https://netxia.cl/blog/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .blog-hero { padding:8rem 0 4rem; text-align:center; background:var(--bg-deep); position:relative; }
+    .blog-hero::before { content:''; position:absolute; inset:0; background-image:radial-gradient(rgba(0,210,255,0.06) 1px,transparent 1px); background-size:28px 28px; }
+    .blog-hero .container { position:relative; z-index:1; }
+    .blog-filter { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-bottom:3rem; }
+    .filter-btn {
+      padding:0.4rem 1rem; border-radius:100px;
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      color:var(--text-2); font-size:0.82rem; font-weight:600; cursor:pointer;
+      transition:all var(--t-fast);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background:rgba(0,210,255,0.1); border-color:var(--cyan); color:var(--cyan);
+    }
+    .blog-full-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.5rem; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <nav class="nav-inner" aria-label="Navegación">
+      <a href="../index.html" class="logo">NETXIA</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#servicios">Servicios</a></li>
+        <li><a href="#" class="active">Blog</a></li>
+        <li><a href="../index.html#talento">Únete</a></li>
+        <li><a href="../index.html#requerimientos" class="nav-cta">Cotizar →</a></li>
+      </ul>
+      <button class="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+    </nav>
+  </div>
+</header>
+
+<nav class="mobile-nav" aria-label="Menú móvil">
+  <a href="../index.html">Inicio</a>
+  <a href="../index.html#servicios">Servicios</a>
+  <a href="../index.html#requerimientos">Cotizar</a>
+</nav>
+
+<section class="blog-hero">
+  <div class="container">
+    <div class="badge" style="margin-bottom:1rem;display:inline-flex">Blog Netxia</div>
+    <h1 class="section-title">
+      Tecnología que <span class="gradient-text">importa</span>
+    </h1>
+    <p class="section-sub" style="margin:1rem auto 0;max-width:560px">
+      Análisis profundos, guías prácticas y tendencias del ecosistema tecnológico chileno y global. Sin hype, solo lo que necesitas saber.
+    </p>
+  </div>
+</section>
+
+<section class="section-py">
+  <div class="container">
+    <!-- Filtros -->
+    <div class="blog-filter" role="group" aria-label="Filtrar por categoría">
+      <button class="filter-btn active" data-cat="all">Todos</button>
+      <button class="filter-btn" data-cat="Inteligencia Artificial">Inteligencia Artificial</button>
+      <button class="filter-btn" data-cat="Ciberseguridad">Ciberseguridad</button>
+      <button class="filter-btn" data-cat="Cloud & DevOps">Cloud & DevOps</button>
+    </div>
+
+    <div class="blog-full-grid" id="blogAllGrid" aria-label="Todos los artículos">
+      <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-2)">⏳ Cargando…</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--bg-deep);padding:4rem 0;text-align:center;border-top:1px solid var(--border)">
+  <div class="container">
+    <h2 style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;margin-bottom:1rem">
+      ¿Tu empresa tiene un desafío tecnológico?
+    </h2>
+    <p style="color:var(--text-2);margin-bottom:1.5rem">Hablemos. Primera sesión de diagnóstico sin costo.</p>
+    <a href="../index.html#requerimientos" class="btn-primary">Solicitar cotización →</a>
+  </div>
+</section>
+
+<footer style="background:var(--bg-deep);border-top:1px solid var(--border);padding:2rem 0;text-align:center">
+  <div class="container">
+    <a href="../index.html" class="logo" style="display:inline-block;margin-bottom:1rem">NETXIA</a>
+    <p style="color:var(--text-3);font-size:0.82rem">© 2026 Netxia Consultores TI · Santiago, Chile</p>
+  </div>
+</footer>
+
+<script src="../js/main.js" defer></script>
+<script>
+(function(){
+  const icons = { 'Inteligencia Artificial':'🤖','Ciberseguridad':'🔐','Cloud & DevOps':'☁️' };
+  let articles = [];
+
+  const grid = document.getElementById('blogAllGrid');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  function formatDate(str){
+    return new Date(str).toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
+  }
+
+  function render(cat){
+    const filtered = cat === 'all' ? articles : articles.filter(a => a.categoria === cat);
+    if (!filtered.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-2);padding:3rem">No hay artículos en esta categoría aún.</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map((a,i) => `
+      <article class="blog-card reveal reveal-delay-${(i%3)+1}">
+        <div class="blog-card-img" role="img" aria-label="${a.imagen_alt}">
+          <span style="position:relative;z-index:1;font-size:3rem">${icons[a.categoria]||'📝'}</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span class="blog-cat">${a.categoria}</span>
+            <span class="blog-date">${formatDate(a.fecha)}</span>
+          </div>
+          <h2 style="font-size:1.05rem;font-family:var(--font-display);font-weight:700;line-height:1.3;margin-bottom:0.65rem">${a.titulo}</h2>
+          <p>${a.resumen}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem">
+            <a href="${a.url}" class="blog-card-link">Leer artículo →</a>
+            <span style="font-size:0.75rem;color:var(--text-3)">⏱️ ${a.lectura}</span>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // Re-observe reveals
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);} });
+    },{threshold:0.12});
+    document.querySelectorAll('.blog-card.reveal').forEach(el => io.observe(el));
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.cat);
+    });
+  });
+
+  fetch('../data/blog.json')
+    .then(r => r.json())
+    .then(data => { articles = data; render('all'); })
+    .catch(() => { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-2)">No se pudo cargar el blog.</div>'; });
+})();
+</script>
+</body>
+</html>

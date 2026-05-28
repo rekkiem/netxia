@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error del servidor | Netxia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; text-align:center; }
+    .error-page { max-width:480px; padding:2rem; }
+    .error-code {
+      font-family:var(--font-display); font-size:8rem; font-weight:800; line-height:1;
+      background:linear-gradient(135deg,#FF3864,#FF8A00);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:0.5rem;
+    }
+    .error-title { font-family:var(--font-display); font-size:1.8rem; font-weight:800; margin-bottom:1rem; }
+    .error-sub { color:var(--text-2); margin-bottom:2rem; line-height:1.7; }
+  </style>
+</head>
+<body>
+  <div class="error-page">
+    <div class="error-code">500</div>
+    <h1 class="error-title">Error del servidor</h1>
+    <p class="error-sub">
+      Algo salió mal en nuestro lado.<br>
+      Estamos trabajando para resolverlo. Intenta de nuevo en unos minutos.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="./index.html" class="btn-primary">← Volver al inicio</a>
+      <a href="mailto:contacto@netxia.cl" class="btn-secondary">Reportar error</a>
+    </div>
+  </div>
+</body>
+</html>

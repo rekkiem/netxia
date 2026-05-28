@@ -1,0 +1,22 @@
+# Bloquear ejecución de PHP en uploads (previene webshells)
+<FilesMatch "\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Bloquear listado de directorio
+Options -Indexes
+
+# Denegar acceso a CVs directamente desde el navegador
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order deny,allow
+  Deny from all
+</IfModule>

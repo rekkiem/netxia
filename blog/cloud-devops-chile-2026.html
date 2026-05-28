@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud & DevOps en Chile 2026: Cuándo Migrar y Qué Esperar | Blog Netxia</title>
+  <meta name="description" content="Comparativa AWS vs Azure vs GCP para el mercado chileno, costos reales en CLP y casos de migración exitosa en retail y banca.">
+  <link rel="canonical" href="https://netxia.cl/blog/cloud-devops-chile-2026.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <nav class="nav-inner" aria-label="Navegación">
+      <a href="../index.html" class="logo">NETXIA</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#servicios">Servicios</a></li>
+        <li><a href="../index.html#blog" class="active">Blog</a></li>
+        <li><a href="../index.html#requerimientos" class="nav-cta">Cotizar →</a></li>
+      </ul>
+      <button class="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+    </nav>
+  </div>
+</header>
+
+<nav class="mobile-nav" aria-label="Menú móvil">
+  <a href="../index.html">Inicio</a>
+  <a href="../index.html#servicios">Servicios</a>
+  <a href="../index.html#requerimientos">Cotizar</a>
+</nav>
+
+<section class="article-hero">
+  <div class="container">
+    <span class="article-category">Cloud & DevOps</span>
+    <h1 class="article-title">
+      Cloud & DevOps en Chile:<br><span class="gradient-text">Cuándo Migrar y Qué Esperar</span>
+    </h1>
+    <div class="article-meta-bar">
+      <span>📅 10 marzo 2026</span>
+      <span>👤 Equipo Netxia</span>
+      <span>⏱️ 10 min lectura</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <article class="article-body">
+    <p style="font-size:1.1rem;color:var(--text)">
+      Con la apertura de la región AWS Santiago (sa-east-2) y la expansión de Azure Chile, 2026 marca el punto de inflexión donde migrar a la nube deja de ser una pregunta estratégica para convertirse en una necesidad operativa. Pero la decisión de cuándo y cómo migrar sigue siendo compleja — y costosa si se hace mal.
+    </p>
+
+    <h2>El Mapa Cloud en Chile 2026</h2>
+    <p>
+      Las tres grandes plataformas tienen presencia regional significativa, cada una con fortalezas distintas para el mercado chileno:
+    </p>
+
+    <h3>Amazon Web Services (AWS)</h3>
+    <p>
+      Con dos zonas de disponibilidad en Santiago y la mayor base de partners certificados en Chile, AWS sigue siendo el líder del mercado. Sus fortalezas incluyen el ecosistema de servicios administrados más amplio, SLA de 99.99% en servicios críticos, y la integración nativa con herramientas de IA como Bedrock y SageMaker.
+    </p>
+    <p>
+      <strong>Mejor para:</strong> startups de crecimiento rápido, empresas que requieren escala global, proyectos de IA/ML intensivos en cómputo.
+    </p>
+
+    <h3>Microsoft Azure</h3>
+    <p>
+      La integración profunda con el ecosistema Microsoft (Active Directory, Office 365, Teams) convierte a Azure en la opción natural para empresas que ya corren infraestructura Microsoft. Las licencias híbridas y el soporte a regulación financiera chilena (CMF) son diferenciadores importantes.
+    </p>
+    <p>
+      <strong>Mejor para:</strong> empresas con ecosistema Microsoft consolidado, instituciones financieras reguladas por CMF, proyectos de nube híbrida.
+    </p>
+
+    <h3>Google Cloud Platform (GCP)</h3>
+    <p>
+      GCP lidera en capacidades de análisis de datos a escala (BigQuery) y en modelos de IA propios (Vertex AI, Gemini). Aunque tiene menor penetración en Chile que AWS o Azure, sus precios son competitivos y la red de fibra óptica propietaria de Google ofrece latencias excepcionalmente bajas.
+    </p>
+    <p>
+      <strong>Mejor para:</strong> proyectos data-intensive, analítica avanzada, empresas con flujos de trabajo nativos en Google Workspace.
+    </p>
+
+    <h2>Costos Reales: Lo Que el Pricing Calculator No Dice</h2>
+    <p>
+      Los calculadores oficiales de AWS, Azure y GCP estiman costos de infraestructura pura, pero la factura real de una migración cloud incluye varios componentes adicionales que las empresas chilenas suelen subestimar:
+    </p>
+
+    <div class="callout">
+      <p><strong>Caso real:</strong> Una empresa retail mediana con 80 servidores on-premise presupuestó $45M CLP/mes en cloud. La factura real al mes 3 fue de $67M. Los $22M adicionales correspondían a transferencia de datos salientes (egress), licencias de software no incluidas, y overprovisioning inicial. Con optimización, bajamos a $38M al mes 6.</p>
+    </div>
+
+    <ul>
+      <li><strong>Egress costs:</strong> cobro por datos que salen de la nube, ignorado frecuentemente en presupuestos iniciales</li>
+      <li><strong>Licencias de software:</strong> Windows Server, SQL Server, herramientas de monitoreo tienen costos separados</li>
+      <li><strong>Soporte premium:</strong> SLAs de respuesta en 15 minutos cuestan entre 3% y 10% del consumo mensual</li>
+      <li><strong>Capacitación del equipo:</strong> certificaciones AWS/Azure cuestan entre $400.000 y $800.000 CLP por persona</li>
+      <li><strong>Consultoría de migración:</strong> entre 20% y 40% del costo de infraestructura del primer año</li>
+    </ul>
+
+    <h2>¿Cuándo Tiene Sentido Migrar?</h2>
+    <p>
+      La migración cloud no es conveniente para todas las empresas en todos los momentos. Señales que indican que es el momento correcto:
+    </p>
+    <ul>
+      <li>Tu infraestructura on-premise tiene más de 5 años y requiere refresh de hardware</li>
+      <li>Tu equipo TI dedica más del 40% del tiempo a mantenimiento de infraestructura</li>
+      <li>Experimentas picos de demanda estacionales difíciles de predimensionar</li>
+      <li>Necesitas capacidades de IA/ML o análisis de datos a escala</li>
+      <li>Debes cumplir normativas de continuidad operacional (BCP/DRP)</li>
+    </ul>
+
+    <p>
+      Por otro lado, la migración <em>no conviene</em> cuando tienes aplicaciones legacy que no pueden containerizarse, equipos sin capacidad de gestionar ambientes cloud, o cuando tus cargas de trabajo son completamente predecibles y constantes (donde on-premise puede ser más económico).
+    </p>
+
+    <h2>DevOps: El Habilitador que Multiplica el Valor del Cloud</h2>
+    <p>
+      Migrar servidores a la nube sin cambiar prácticas de desarrollo es "lift-and-shift": pagas más por lo mismo. El verdadero valor cloud se desbloquea con DevOps: pipelines de CI/CD, Infrastructure-as-Code (Terraform), containerización (Docker/Kubernetes) y monitoreo observability.
+    </p>
+    <p>
+      Empresas chilenas que han adoptado DevOps maduro reportan:
+    </p>
+    <ul>
+      <li>Reducción del 60-80% en tiempo de deployment (de semanas a horas)</li>
+      <li>Disminución del 70% en incidentes de producción relacionados a deployments</li>
+      <li>Aumento del 40% en frecuencia de releases de features</li>
+      <li>Reducción del 35% en costos cloud via right-sizing automatizado</li>
+    </ul>
+
+    <h2>Roadmap de Migración Recomendado</h2>
+    <p>Para una empresa mediana (50-200 personas), el roadmap típico que seguimos en Netxia:</p>
+    <ul>
+      <li><strong>Mes 1-2 — Assessment:</strong> inventario de aplicaciones, análisis de dependencias, definición de arquitectura target</li>
+      <li><strong>Mes 3-4 — Fundación:</strong> landing zone segura, networking, IAM, monitoreo base</li>
+      <li><strong>Mes 5-8 — Migración por olas:</strong> comenzando con sistemas no-críticos, validando, luego sistemas core</li>
+      <li><strong>Mes 9-12 — Optimización:</strong> right-sizing, reserved instances, automatización de costos</li>
+      <li><strong>Año 2 — Modernización:</strong> containerización, serverless, capacidades de IA nativas cloud</li>
+    </ul>
+
+    <div class="article-cta">
+      <h3>¿Es el momento correcto para migrar tu empresa?</h3>
+      <p>Realizamos assessments cloud gratuitos de 2 horas. Al finalizar recibirás un informe con arquitectura target recomendada, estimación de costos en CLP y ROI proyectado.</p>
+      <a href="../index.html#requerimientos" class="btn-primary">Solicitar assessment cloud gratuito →</a>
+    </div>
+  </article>
+</div>
+
+<footer style="background:var(--bg-deep);border-top:1px solid var(--border);padding:2rem 0;text-align:center">
+  <div class="container">
+    <a href="../index.html" class="logo" style="display:inline-block;margin-bottom:1rem">NETXIA</a>
+    <p style="color:var(--text-3);font-size:0.82rem">© 2026 Netxia Consultores TI · Santiago, Chile</p>
+  </div>
+</footer>
+<script src="../js/main.js" defer></script>
+</body>
+</html>
