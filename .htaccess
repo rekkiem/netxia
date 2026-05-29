@@ -126,8 +126,11 @@ Options -MultiViews
 
 # ── Bloquear User-Agents maliciosos ─────────────────────────────────
 <IfModule mod_rewrite.c>
-  RewriteCond %{HTTP_USER_AGENT} (nikto|sqlmap|nessus|openvas|masscan|nmap|zap|burp) [NC]
-  RewriteRule .* - [F,L]
+  # Bloquear acceso a directorios sensibles
+    RewriteRule ^(data|logs|uploads/cv|php/phpmailer)(/|$) - [F,L]
+
+    # SOLUCIÓN: Bloquear solo archivos internos de configuración, permitiendo los "submit_"
+    RewriteRule ^php/(config|csrf|chatbot)$ - [F,L]
 </IfModule>
 
 # ── Límite de tamaño de subida (máx 2 MB para 50webs) ────────────────
