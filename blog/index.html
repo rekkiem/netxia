@@ -149,7 +149,7 @@
     });
   });
 
-  fetch('../data/blog.json')
+  fetch('../php/blog.php')
     .then(r => r.json())
     .then(data => { articles = data; render('all'); })
     .catch(() => { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-2)">No se pudo cargar el blog.</div>'; });

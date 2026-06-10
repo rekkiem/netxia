@@ -1,2 +1,3 @@
 data/sessions/*
 reports-lighthouse-*.json
+/php/config.php

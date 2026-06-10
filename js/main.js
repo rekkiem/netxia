@@ -160,7 +160,7 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
   const grid = $('#blogGrid');
   if (!grid) return;
 
-  fetch('./data/blog.json')
+  fetch('./php/blog.php')
     .then(r => r.json())
     .then(articles => {
       const icons = { 'Inteligencia Artificial': '🤖', 'Ciberseguridad': '🔐', 'Cloud & DevOps': '☁️' };
