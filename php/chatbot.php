@@ -1,85 +1,49 @@
 <?php
 /**
- * NETXIA — Chatbot proxy v1.2
- * Fix: display_errors suprimido, graceful curl check, JSON siempre válido
+ * NETXIA — Chatbot proxy v2.0
+ * Claude API · curl check · SSL local fix · JSON siempre válido
  */
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 error_reporting(E_ERROR);
-
 require_once __DIR__ . '/config.php';
 netxia_session_start();
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    json_response(false, 'Método no permitido.');
-}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_response(false, 'Método no permitido.');
+if (!function_exists('curl_init'))         json_response(false, 'El asistente no está disponible (curl deshabilitado). Habilita la extensión curl en php.ini.');
+if (!rate_limit('chat_' . ($_SERVER['REMOTE_ADDR'] ?? ''), RATE_LIMIT_CHAT)) json_response(false, 'Demasiados mensajes. Intenta en unos minutos.');
+if (empty(ANTHROPIC_API_KEY))              json_response(false, 'Chatbot sin configurar. Agrega ANTHROPIC_API_KEY en php/config.php.');
 
-// ── Verificar que curl está disponible ────────────────────────────────
-if (!function_exists('curl_init')) {
-    log_event('chatbot', 'curl no disponible en este servidor', 'ERROR');
-    json_response(false, 'El asistente no está disponible en el servidor local. Contáctanos a contacto@netxia.cl');
-}
-
-// ── Rate limiting (desactivado en local) ──────────────────────────────
-$rl_key = 'chat_' . ($_SERVER['REMOTE_ADDR'] ?? 'anon');
-if (!rate_limit($rl_key, RATE_LIMIT_CHAT)) {
-    json_response(false, 'Demasiados mensajes. Intenta en unos minutos.');
-}
-
-// ── Validar API key ───────────────────────────────────────────────────
-if (empty(ANTHROPIC_API_KEY) || ANTHROPIC_API_KEY === 'sk-ant-XXXXXXXXX') {
-    json_response(false, 'Chatbot no configurado. Agrega tu API key en php/config.php y reinicia Apache.');
-}
-
-// ── Parse input ───────────────────────────────────────────────────────
-$rawBody = file_get_contents('php://input');
-$body    = json_decode($rawBody, true);
-
-if (json_last_error() !== JSON_ERROR_NONE) {
-    json_response(false, 'JSON de entrada inválido.');
-}
-
+$body    = json_decode(file_get_contents('php://input'), true);
 $message = sanitize($body['message'] ?? '', 1000);
 $history = $body['history'] ?? [];
+if (empty($message)) json_response(false, 'Mensaje vacío.');
 
-if (empty($message)) {
-    json_response(false, 'Mensaje vacío.');
-}
-
-// ── Construir historial ───────────────────────────────────────────────
+// Historial (últimas 10 interacciones)
 $messages = [];
-foreach (array_slice($history, -10) as $turn) {
-    if (!in_array($turn['role'] ?? '', ['user', 'assistant'])) continue;
-    $messages[] = [
-        'role'    => $turn['role'],
-        'content' => mb_substr((string)($turn['content'] ?? ''), 0, 1000),
-    ];
+foreach (array_slice($history, -10) as $t) {
+    if (!in_array($t['role'] ?? '', ['user','assistant'])) continue;
+    $messages[] = ['role' => $t['role'], 'content' => mb_substr((string)($t['content'] ?? ''), 0, 1000)];
 }
 $messages[] = ['role' => 'user', 'content' => $message];
 
-// ── System prompt ─────────────────────────────────────────────────────
-$system = 'Eres el asistente virtual de Netxia, consultora TI chilena especializada en Inteligencia Artificial, Ciberseguridad y Cloud/DevOps. Atiendes a empresas chilenas.
+$system = 'Eres el asistente virtual de Netxia, consultora TI chilena especializada en IA, Ciberseguridad y Cloud/DevOps.
 
-PERSONALIDAD: Profesional pero cercano. Español chileno formal. Conciso y útil. Máximo 3 párrafos.
+PERSONALIDAD: Profesional pero cercano. Español chileno formal. Respuestas cortas (máx 3 párrafos).
 
 SERVICIOS:
-- IA & ML: agentes autónomos, automatización, modelos custom
-- Ciberseguridad: Zero Trust, SOC 24/7, pentesting, ISO 27001, CMF
-- Cloud & DevOps: migración AWS/Azure/GCP, CI/CD, Terraform, Kubernetes
+- IA & ML: agentes autónomos, automatización, modelos custom, RAG enterprise
+- Ciberseguridad: Zero Trust, SOC 24/7, pentesting, ISO 27001, cumplimiento CMF
+- Cloud & DevOps: AWS/Azure/GCP, Terraform, Kubernetes, CI/CD
 
-MÉTRICAS: +200 proyectos, 95% satisfacción, 10+ años, clientes: Falabella, Walmart Chile, Mall Plaza.
+DATOS: +200 proyectos, 95% satisfacción, 10+ años. Clientes: Falabella, Walmart Chile, Mall Plaza.
 CONTACTO: contacto@netxia.cl | +56 9 8902 4643 | Santiago, Chile
 
-Si piden cotización, solicita nombre, empresa y email. Nunca inventes precios exactos.';
+REGLAS: Si piden cotización solicita nombre, empresa y email. No inventes precios exactos. Si no es TI, redirige amablemente.';
 
-// ── Llamar Claude API ─────────────────────────────────────────────────
 $payload = json_encode([
     'model'      => CHATBOT_MODEL,
     'max_tokens' => 600,
@@ -94,45 +58,36 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 30,
     CURLOPT_CONNECTTIMEOUT => 10,
-    CURLOPT_SSL_VERIFYPEER => !IS_LOCAL, // En local no verificar SSL para evitar problemas de cert
+    CURLOPT_SSL_VERIFYPEER => !IS_LOCAL,
     CURLOPT_HTTPHEADER     => [
         'Content-Type: application/json',
         'x-api-key: ' . ANTHROPIC_API_KEY,
         'anthropic-version: 2023-06-01',
     ],
 ]);
-
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlErr  = curl_error($ch);
 curl_close($ch);
 
-if ($curlErr) {
-    log_event('chatbot', "curl error: $curlErr", 'ERROR');
-    json_response(false, 'No se pudo conectar con el asistente. Verifica tu conexión a internet.');
-}
+if ($curlErr) { log_event('chatbot', "curl: $curlErr", 'ERROR'); json_response(false, 'Sin conexión con el asistente. Revisa tu internet.'); }
 
 if ($httpCode !== 200) {
-    $errBody = json_decode($response, true);
-    $errMsg  = $errBody['error']['message'] ?? "HTTP $httpCode";
-    log_event('chatbot', "API error $httpCode: $errMsg", 'ERROR');
-
-    // Mensajes de error amigables según código
-    $friendly = match(true) {
+    $apiErr = json_decode($response, true)['error']['message'] ?? "HTTP $httpCode";
+    log_event('chatbot', "API $httpCode: $apiErr", 'ERROR');
+    $msg = match(true) {
         $httpCode === 401 => 'API key inválida. Verifica ANTHROPIC_API_KEY en config.php.',
-        $httpCode === 429 => 'Límite de uso de API alcanzado. Intenta en unos minutos.',
-        $httpCode >= 500  => 'El servicio de IA está temporalmente no disponible.',
-        default           => "Error al procesar la respuesta (HTTP $httpCode).",
+        $httpCode === 400 => 'Modelo inválido o solicitud malformada. Verifica CHATBOT_MODEL en config.php.',
+        $httpCode === 429 => 'Límite de API alcanzado. Intenta en unos minutos.',
+        $httpCode >= 500  => 'Servicio de IA temporalmente no disponible.',
+        default           => "Error de API (HTTP $httpCode).",
     };
-    json_response(false, $friendly);
+    json_response(false, $msg);
 }
 
 $data  = json_decode($response, true);
 $reply = $data['content'][0]['text'] ?? '';
-
-if (empty($reply)) {
-    json_response(false, 'Respuesta vacía del asistente. Intenta de nuevo.');
-}
+if (empty($reply)) json_response(false, 'Respuesta vacía. Intenta de nuevo.');
 
 log_event('chatbot', 'msg: ' . mb_substr($message, 0, 80));
 json_response(true, 'ok', ['reply' => $reply]);

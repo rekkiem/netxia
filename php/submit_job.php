@@ -1,12 +1,11 @@
 <?php
 /**
- * NETXIA — submit_job.php v1.3
- * Email feedback visible + error log dedicado
+ * NETXIA — submit_job.php v2.0
+ * Gmail SMTP · CSRF · Drag&Drop CV · JSON storage
  */
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 error_reporting(E_ERROR);
-
 require_once __DIR__ . '/config.php';
 netxia_session_start();
 
@@ -18,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_response(false, 'Método no perm
 // CSRF
 $token = sanitize($_POST['csrf_token'] ?? '');
 if (!csrf_validate($token)) {
-    if (!IS_LOCAL) json_response(false, 'Token de seguridad inválido. Recarga la página.');
-    log_event('jobs', 'CSRF bypass local', 'WARN');
+    if (!IS_LOCAL) json_response(false, 'Token inválido. Recarga la página.');
+    log_event('jobs', 'CSRF bypass (local)', 'WARN');
 }
 
 // Rate limit
 if (!rate_limit('job_' . ($_SERVER['REMOTE_ADDR'] ?? ''), RATE_LIMIT_JOB))
-    json_response(false, 'Límite de postulaciones alcanzado. Intenta en 1 hora.');
+    json_response(false, 'Límite alcanzado. Intenta en 1 hora.');
 
 // Campos
 $nombre      = sanitize($_POST['nombre']      ?? '', 100);
@@ -36,40 +35,44 @@ $linkedin    = sanitize($_POST['linkedin']    ?? '', 200);
 $carta       = sanitize($_POST['carta']       ?? '', 3000);
 $habilidades = sanitize($_POST['habilidades'] ?? '', 500);
 
-$errors = [];
-if (empty($nombre))          $errors[] = 'Nombre requerido';
-if (!$email)                 $errors[] = 'Email inválido';
-if (empty($cargo))           $errors[] = 'Cargo requerido';
-if (mb_strlen($carta) < 30) $errors[] = 'Carta muy corta (mín. 30 caracteres)';
-if (!empty($errors)) json_response(false, implode('. ', $errors));
+$errs = [];
+if (empty($nombre))          $errs[] = 'Nombre requerido';
+if (!$email)                 $errs[] = 'Email inválido';
+if (empty($cargo))           $errs[] = 'Cargo requerido';
+if (mb_strlen($carta) < 30) $errs[] = 'Carta muy corta (mín. 30 caracteres)';
+if ($errs) json_response(false, implode('. ', $errs));
 
-// CV
+// CV Upload
 $cv_filename = '';
 $ext = '';
 if (!empty($_FILES['cv']['tmp_name']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
     $file = $_FILES['cv'];
     if ($file['size'] > MAX_CV_SIZE) json_response(false, 'CV demasiado grande (máx 2 MB).');
 
-    $mimeType = '';
-    if (class_exists('finfo')) {
-        $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
-    } elseif (function_exists('mime_content_type')) {
-        $mimeType = mime_content_type($file['tmp_name']);
-    } else {
-        $origExt  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $mimeType = match($origExt) {
+    // Detectar MIME con múltiples fallbacks
+    $mime = '';
+    if (class_exists('finfo'))                { $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']); }
+    elseif (function_exists('mime_content_type')) { $mime = mime_content_type($file['tmp_name']); }
+    else {
+        $origExt = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mime = match($origExt) {
             'pdf'  => 'application/pdf',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'doc'  => 'application/msword',
             default => 'application/octet-stream',
         };
     }
-    if (!in_array($mimeType, ALLOWED_CV_TYPES)) json_response(false, "Formato no permitido. Usa PDF o DOCX.");
+    if (!in_array($mime, ALLOWED_CV_TYPES)) json_response(false, 'Solo se aceptan PDF o DOCX.');
 
-    $ext = ($mimeType === 'application/pdf') ? 'pdf' : 'docx';
-    $cv_filename = date('Ymd_His') . '_' . preg_replace('/[^a-z0-9]/i', '_', $nombre) . '.' . $ext;
+    $ext         = ($mime === 'application/pdf') ? 'pdf' : 'docx';
+    $safeName    = preg_replace('/[^a-z0-9]/i', '_', $nombre);
+    $cv_filename = date('Ymd_His') . '_' . $safeName . '.' . $ext;
     if (!is_dir(UPLOAD_DIR)) @mkdir(UPLOAD_DIR, 0755, true);
     if (!move_uploaded_file($file['tmp_name'], UPLOAD_DIR . '/' . $cv_filename))
-        json_response(false, 'No se pudo guardar el CV. Verifica permisos de uploads/cv/');
+        json_response(false, 'Error al guardar CV. Verifica permisos de uploads/cv/');
+} elseif (!empty($_FILES['cv']['error']) && $_FILES['cv']['error'] !== UPLOAD_ERR_NO_FILE) {
+    $uploadErrors = [2 => 'CV muy grande (máx 2 MB)', 3 => 'Upload incompleto. Intenta de nuevo.'];
+    json_response(false, $uploadErrors[$_FILES['cv']['error']] ?? 'Error al subir CV.');
 }
 
 // Guardar JSON
@@ -77,8 +80,8 @@ $record = [
     'id' => uniqid('job_', true), 'fecha' => date('c'),
     'nombre' => $nombre, 'email' => $email, 'telefono' => $telefono,
     'cargo' => $cargo, 'experiencia' => $experiencia, 'linkedin' => $linkedin,
-    'habilidades' => $habilidades, 'carta' => $carta, 'cv_archivo' => $cv_filename,
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+    'habilidades' => $habilidades, 'carta' => $carta,
+    'cv_archivo' => $cv_filename, 'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
 ];
 $dir = DATA_DIR . '/applications';
 if (!is_dir($dir)) @mkdir($dir, 0755, true);
@@ -86,61 +89,48 @@ $jf  = $dir . '/' . date('Y-m') . '.json';
 $arr = file_exists($jf) ? (json_decode(file_get_contents($jf), true) ?? []) : [];
 $arr[] = $record;
 @file_put_contents($jf, json_encode($arr, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-log_event('jobs', "Postulación guardada: $nombre — $cargo — $email");
+log_event('jobs', "Guardado: $nombre — $cargo — $email");
 
-// Email
-$emailStatus = '';
+// Enviar email vía Gmail SMTP
+$emailNote = '';
 if (empty(SMTP_PASS)) {
-    $emailStatus = ' (⚠️ Email no enviado: SMTP_PASS vacío en config.php)';
-    log_event('jobs', 'SMTP_PASS vacío — email no enviado', 'WARN');
+    $emailNote = IS_LOCAL ? ' [Dev: SMTP_PASS vacío]' : '';
+    log_event('jobs', 'SMTP_PASS vacío', 'WARN');
 } else {
     try {
-        require_once __DIR__ . '/phpmailer/PHPMailer.php';
-        require_once __DIR__ . '/phpmailer/SMTP.php';
-        require_once __DIR__ . '/phpmailer/Exception.php';
-
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = SMTP_HOST;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = SMTP_USER;
-        $mail->Password   = SMTP_PASS;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = SMTP_PORT;
-        $mail->CharSet    = 'UTF-8';
-        if (IS_LOCAL) {
-            $mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
-        }
-        $mail->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+        $mail = create_mailer();
         $mail->addAddress(ADMIN_EMAIL, 'Netxia RRHH');
         $mail->addReplyTo($email, $nombre);
         if ($cv_filename && file_exists(UPLOAD_DIR . '/' . $cv_filename))
             $mail->addAttachment(UPLOAD_DIR . '/' . $cv_filename, "CV_{$nombre}.{$ext}");
 
+        $mail->Subject = "👤 Postulación: $nombre — $cargo";
         $mail->isHTML(true);
-        $mail->Subject = "👤 Nueva Postulación: $nombre — $cargo";
-        $mail->Body    = "<h2 style='color:#00D2FF'>Nueva Postulación</h2>
-            <table cellpadding='8' style='font-family:sans-serif'>
-            <tr><td><b>Nombre:</b></td><td>".htmlspecialchars($nombre)."</td></tr>
-            <tr><td><b>Email:</b></td><td>".htmlspecialchars($email)."</td></tr>
-            <tr><td><b>Teléfono:</b></td><td>".htmlspecialchars($telefono)."</td></tr>
-            <tr><td><b>Cargo:</b></td><td>".htmlspecialchars($cargo)."</td></tr>
-            <tr><td><b>Experiencia:</b></td><td>".htmlspecialchars($experiencia)."</td></tr>
-            <tr><td><b>Habilidades:</b></td><td>".htmlspecialchars($habilidades)."</td></tr>
-            <tr><td><b>LinkedIn:</b></td><td>".htmlspecialchars($linkedin)."</td></tr>
-            <tr><td><b>Carta:</b></td><td>".nl2br(htmlspecialchars($carta))."</td></tr>
-            </table>";
+        $mail->Body = "
+<div style='font-family:Arial,sans-serif;max-width:600px;background:#06091A;color:#EEF2FF;padding:24px;border-radius:12px'>
+  <h2 style='color:#00D2FF;margin-bottom:20px'>Nueva Postulación — Netxia</h2>
+  <table width='100%' cellpadding='8' style='border-collapse:collapse'>
+    <tr style='border-bottom:1px solid #1a2040'><td width='140' style='color:#8B9DC3'>Nombre</td><td>" . htmlspecialchars($nombre) . "</td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>Email</td><td><a href='mailto:$email' style='color:#00D2FF'>$email</a></td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>Teléfono</td><td>" . htmlspecialchars($telefono) . "</td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>Cargo</td><td><strong style='color:#00E887'>" . htmlspecialchars($cargo) . "</strong></td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>Experiencia</td><td>" . htmlspecialchars($experiencia) . "</td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>Habilidades</td><td>" . htmlspecialchars($habilidades) . "</td></tr>
+    <tr style='border-bottom:1px solid #1a2040'><td style='color:#8B9DC3'>LinkedIn</td><td>" . ($linkedin ? "<a href='" . htmlspecialchars($linkedin) . "' style='color:#00D2FF'>" . htmlspecialchars($linkedin) . "</a>" : '—') . "</td></tr>
+    <tr><td style='color:#8B9DC3;vertical-align:top'>Carta</td><td style='line-height:1.6'>" . nl2br(htmlspecialchars($carta)) . "</td></tr>
+  </table>
+  <p style='margin-top:16px;color:#8B9DC3;font-size:12px'>" . ($cv_filename ? "CV adjunto: $cv_filename" : "Sin CV adjunto") . " | " . date('d/m/Y H:i:s') . "</p>
+</div>";
+        $mail->AltBody = "Postulación de $nombre para $cargo\nEmail: $email\nCarta: $carta";
         $mail->send();
-        $emailStatus = ' Email enviado a ' . ADMIN_EMAIL . '.';
-        log_event('jobs', "Email enviado OK a $ADMIN_EMAIL");
+        log_event('jobs', "Email Gmail OK → $ADMIN_EMAIL");
     } catch (\Exception $e) {
         $err = $e->getMessage();
-        log_event('jobs', "Email ERROR: $err", 'WARN');
+        log_event('jobs', "Gmail ERROR: $err", 'WARN');
         @file_put_contents(LOG_DIR . '/email_errors.log', date('c') . " | JOB | $err\n", FILE_APPEND | LOCK_EX);
-        $emailStatus = ' (Email no enviado: ' . $err . ')';
+        $emailNote = IS_LOCAL ? " [Dev: Error Gmail — $err]" : '';
     }
 }
 
 unset($_SESSION['csrf_token']);
-$msg = "¡Postulación recibida, {$nombre}!" . (IS_LOCAL ? $emailStatus : '') . ' Revisaremos tu perfil y te contactaremos pronto.';
-json_response(true, $msg);
+json_response(true, "¡Postulación recibida, {$nombre}!{$emailNote} Revisaremos tu perfil y te contactaremos pronto.");
