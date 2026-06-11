@@ -1,4 +1,12 @@
-# Bloquear acceso público total a /data/
+# ══════════════════════════════════════════════════════
+# NETXIA — data/.htaccess
+# blog.json es público (solo metadatos de artículos)
+# Todo lo demás bloqueado (requirements, applications, sessions)
+# ══════════════════════════════════════════════════════
+
+Options -Indexes
+
+# Bloquear todo por defecto
 <IfModule mod_authz_core.c>
   Require all denied
 </IfModule>
@@ -6,3 +14,14 @@
   Order deny,allow
   Deny from all
 </IfModule>
+
+# Permitir blog.json específicamente (sin datos sensibles)
+<Files "blog.json">
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+  </IfModule>
+</Files>

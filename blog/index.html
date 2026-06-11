@@ -95,7 +95,7 @@
   </div>
 </footer>
 
-<script src="../js/main.js" defer></script>
+<script src="../js/main.js?v=2" defer></script>
 <script>
 (function(){
   const icons = { 'Inteligencia Artificial':'🤖','Ciberseguridad':'🔐','Cloud & DevOps':'☁️' };
@@ -149,7 +149,7 @@
     });
   });
 
-  fetch('../php/blog.php')
+  fetch('../data/blog.json')
     .then(r => r.json())
     .then(data => { articles = data; render('all'); })
     .catch(() => { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-2)">No se pudo cargar el blog.</div>'; });
