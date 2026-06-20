@@ -9,6 +9,10 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 require_once __DIR__ . '/config.php';
 
+if (!defined('GEMINI_API_KEY')) define('GEMINI_API_KEY', '');
+if (!defined('GEMINI_MODEL')) define('GEMINI_MODEL', 'gemini-2.5-flash-lite');
+if (!defined('CHATBOT_LOCAL_FALLBACK')) define('CHATBOT_LOCAL_FALLBACK', true);
+
 $result   = null;
 $debugLog = [];
 $sending  = isset($_GET['send']);
@@ -49,7 +53,8 @@ $checks = [
     'SMTP_USER configurado'          => !empty(SMTP_USER),
     'SMTP_PASS (App Password) set'   => !empty(SMTP_PASS),
     'ADMIN_EMAIL configurado'        => !empty(ADMIN_EMAIL),
-    'ANTHROPIC_API_KEY configurado'  => !empty(ANTHROPIC_API_KEY),
+    'Chatbot utilizable'             => !empty(GEMINI_API_KEY) || CHATBOT_LOCAL_FALLBACK,
+    'Fallback local habilitado'      => CHATBOT_LOCAL_FALLBACK,
     'curl habilitado'                => function_exists('curl_init'),
     'finfo disponible'               => class_exists('finfo'),
     'data/ escribible'               => is_writable(DATA_DIR) || is_dir(DATA_DIR),
@@ -96,9 +101,11 @@ $checks = [
   <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">SMTP_PASS</span>
     <span><?= empty(SMTP_PASS) ? '<span class="fail">⚠️ VACÍO — email no se enviará</span>' : '<span class="ok">✅ ' . strlen(SMTP_PASS) . ' caracteres</span>' ?></span></div>
   <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">ADMIN_EMAIL (To)</span><span><?= htmlspecialchars(ADMIN_EMAIL) ?></span></div>
-  <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">CHATBOT_MODEL</span><span><?= htmlspecialchars(CHATBOT_MODEL) ?></span></div>
-  <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">API Key</span>
-    <span><?= empty(ANTHROPIC_API_KEY) ? '<span class="fail">⚠️ Vacío</span>' : '<span class="ok">✅ sk-ant-...</span>' ?></span></div>
+  <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">GEMINI_MODEL</span><span><?= htmlspecialchars(GEMINI_MODEL) ?></span></div>
+  <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">GEMINI_API_KEY</span>
+    <span><?= empty(GEMINI_API_KEY) ? '<span class="warn">⚠️ Vacía — se usará FAQ local sin costo</span>' : '<span class="ok">✅ configurada</span>' ?></span></div>
+  <div class="row"><span style="color:#8B9DC3;width:160px;flex-shrink:0">Fallback local</span>
+    <span><?= CHATBOT_LOCAL_FALLBACK ? '<span class="ok">✅ habilitado</span>' : '<span class="fail">❌ deshabilitado</span>' ?></span></div>
 </div>
 
 <?php if (empty(SMTP_PASS)): ?>

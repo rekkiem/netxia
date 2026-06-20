@@ -1,6 +1,6 @@
 /**
  * NETXIA Chatbot Widget
- * Conecta con php/chatbot.php → Claude API
+ * Conecta con php/chatbot.php → Gemini API + fallback local
  */
 'use strict';
 
@@ -118,11 +118,21 @@
 
   // Mini markdown: bold, bullet lists, line breaks
   function parseMarkdown(text) {
-    return text
+    return escapeHtml(text)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/^• (.+)$/gm, '<li>$1</li>')
       .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
       .replace(/\n/g, '<br>');
+  }
+
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }[char]));
   }
 })();

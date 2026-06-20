@@ -1,5 +1,5 @@
 # NETXIA — MVP Web 2026 v2.0
-## Gmail SMTP · Claude AI · JSON Storage · 50webs Compatible
+## Gmail SMTP · Gemini API + FAQ Local · JSON Storage · 50webs Compatible
 
 ---
 
@@ -21,8 +21,9 @@ El hosting 50webs Free **bloquea SMTP propio**. La solución es Gmail SMTP.
 // Gmail SMTP (ya configurado — solo completa la contraseña)
 define('SMTP_PASS', 'abcdabcdabcdabcd'); // ← Tus 16 chars del App Password
 
-// Chatbot Claude AI
-define('ANTHROPIC_API_KEY', 'sk-ant-...');  // ← console.anthropic.com
+// Chatbot Gemini AI (opcional: si queda vacío responde con FAQ local)
+define('GEMINI_API_KEY', 'AIza...');        // ← aistudio.google.com/app/apikey
+define('GEMINI_MODEL',   'gemini-2.5-flash-lite');
 ```
 
 ### Paso 3 — Subir por FTP a 50webs
@@ -63,7 +64,7 @@ netxia/
 ├── php/
 │   ├── config.php                ← ⚠️ CONFIGURAR: SMTP_PASS + API_KEY
 │   ├── csrf.php                  ← Tokens de seguridad
-│   ├── chatbot.php               ← Proxy Claude API
+│   ├── chatbot.php               ← Proxy Gemini API + fallback FAQ local
 │   ├── submit_requirements.php   ← Handler cotizaciones → Gmail
 │   ├── submit_job.php            ← Handler postulaciones → Gmail + adjunto CV
 │   ├── blog.php                  ← Proxy blog JSON (fallback)
@@ -101,10 +102,11 @@ netxia/
 
 ### Configuración XAMPP necesaria
 
-**1. Habilitar curl** (para el chatbot):
+**1. Habilitar curl** (opcional, para respuestas generativas con Gemini):
 - Abre `C:\xampp\php\php.ini`
 - Busca `;extension=curl` → quita el `;`
 - Reinicia Apache
+- Si curl no está disponible, el chatbot igual responde usando FAQ local.
 
 **2. RewriteBase para subdirectorio:**
 En `.htaccess`, línea 13:
@@ -158,7 +160,8 @@ Agrega la nueva URL.
 
 **Pre-vuelo:**
 - [ ] `SMTP_PASS` configurado con App Password de 16 chars
-- [ ] `ANTHROPIC_API_KEY` configurado
+- [ ] `GEMINI_API_KEY` configurado (opcional; sin key usa FAQ local)
+- [ ] `CHATBOT_LOCAL_FALLBACK` habilitado
 - [ ] `RewriteBase /` (sin `/netxia/`)
 
 **Verificación post-subida:**
@@ -181,8 +184,8 @@ Agrega la nueva URL.
 | Email no llega | SMTP_PASS vacío o incorrecto | Verifica App Password en test_email.php |
 | Gmail rechaza conexión | 2FA no activo en Gmail | Activa verificación en 2 pasos primero |
 | Blog no carga artículos | data/.htaccess mal copiado | Verifica que blog.json es accesible en /data/blog.json |
-| Chatbot "curl deshabilitado" | PHP sin extensión curl | Habilita en php.ini y reinicia Apache |
-| Chatbot HTTP 400 | Modelo inválido | Verifica `CHATBOT_MODEL` = `claude-haiku-4-5-20251001` |
+| Chatbot responde FAQ local | GEMINI_API_KEY vacía, curl deshabilitado o API sin cuota | Configura `GEMINI_API_KEY` si quieres respuestas generativas |
+| Chatbot HTTP 400/429 en logs | Modelo inválido o límite de Gemini | Verifica `GEMINI_MODEL` y la cuota activa en AI Studio; el usuario seguirá recibiendo FAQ local |
 | Formulario "token inválido" | Sesiones no funcionan | Crear `data/sessions/` con permisos 755 |
 | CV no se guarda | Sin permisos en uploads/ | Chmod 755 a `uploads/cv/` |
 | 500 en PHP | display_errors on en XAMPP | Normal en local; en producción está desactivado |
