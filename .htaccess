@@ -93,3 +93,18 @@ Options -MultiViews
 </IfModule>
 
 AddDefaultCharset UTF-8
+# -FrontPage-
+
+IndexIgnore .htaccess */.??* *~ *# */HEADER* */README* */_vti*
+
+<Limit GET POST>
+order deny,allow
+deny from all
+allow from all
+</Limit>
+<Limit PUT DELETE>
+order deny,allow
+deny from all
+</Limit>
+AuthUserFile /services/users//z50websp2/rekkiem//www/netxia.cl/_vti_pvt/service.pwd
+AuthGroupFile /services/users//z50websp2/rekkiem//www/netxia.cl/_vti_pvt/service.grp
