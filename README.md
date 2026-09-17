@@ -132,8 +132,7 @@ RewriteBase /netxia/
 
 1. En `php/config.php` define una contraseña:
    ```php
-   define('BLOG_ADMIN_PASS', 'tu-clave-segura');
-   // o mejor: define('BLOG_ADMIN_PASS', password_hash('tu-clave', PASSWORD_DEFAULT));
+   define('BLOG_ADMIN_PASS', password_hash('tu-clave-larga', PASSWORD_DEFAULT));
    ```
 2. Visita → `https://netxia.cl/php/admin/`
 3. Crea/edita el artículo (Markdown simple) y pulsa **Guardar**.
@@ -197,7 +196,7 @@ Agrega la nueva URL.
 |---|---|---|
 | Email no llega | SMTP_PASS vacío o incorrecto | Verifica App Password en test_email.php |
 | Gmail rechaza conexión | 2FA no activo en Gmail | Activa verificación en 2 pasos primero |
-| Blog no carga artículos | data/.htaccess mal copiado | Verifica que blog.json es accesible en /data/blog.json |
+| Blog no carga artículos | Proxy PHP no disponible o JSON inválido | Verifica `https://netxia.cl/php/blog.php`; `/data/blog.json` debe seguir bloqueado con 403 |
 | Chatbot responde FAQ local | GEMINI_API_KEY vacía, curl deshabilitado o API sin cuota | Configura `GEMINI_API_KEY` si quieres respuestas generativas |
 | Chatbot HTTP 400/429 en logs | Modelo inválido o límite de Gemini | Verifica `GEMINI_MODEL` y la cuota activa en AI Studio; el usuario seguirá recibiendo FAQ local |
 | Formulario "token inválido" | Sesiones no funcionan | Crear `data/sessions/` con permisos 755 |

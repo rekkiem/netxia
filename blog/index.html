@@ -34,7 +34,7 @@
       <a href="../index.html" class="logo">NETXIA</a>
       <ul class="nav-links">
         <li><a href="../index.html#servicios">Servicios</a></li>
-        <li><a href="#" class="active">Blog</a></li>
+        <li><a href="./" class="active">Blog</a></li>
         <li><a href="../index.html#talento">Únete</a></li>
         <li><a href="../index.html#requerimientos" class="nav-cta">Cotizar →</a></li>
       </ul>
@@ -106,7 +106,9 @@
   const filterBtns = document.querySelectorAll('.filter-btn');
 
   function escapeHtml(s){
-    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
   }
   function formatDate(str){
     const d = new Date(str + (String(str).length === 10 ? 'T12:00:00' : ''));
@@ -115,10 +117,14 @@
   }
 
   function articleUrl(a) {
-    if (a.url && a.url.startsWith('/')) return a.url;
-    if (a.slug) return '/blog/' + a.slug + '.html';
-    if (a.url && a.url.indexOf('./blog/') === 0) return a.url.replace('./blog/', './');
-    return a.url || '#';
+    const slug = String(a.slug || '').trim();
+    if (/^[a-z0-9-]+$/i.test(slug)) return './' + slug + '.html';
+
+    const url = String(a.url || '').trim();
+    const m = url.match(/(?:^|\/)blog\/([a-z0-9-]+)\.html$/i);
+    if (m) return './' + m[1] + '.html';
+
+    return '#';
   }
 
   function render(cat){

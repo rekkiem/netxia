@@ -27,7 +27,7 @@ copy php\example.config.php php\config.php
 Edita `php\config.php`:
 
 - `SMTP_PASS` — opcional en local (formularios guardan JSON igual)
-- `BLOG_ADMIN_PASS` — pon una clave simple, ej. `dev-local-2026`
+- `BLOG_ADMIN_PASS` — pon una clave simple, ej. `dev-local-2026`; si lo dejas vacío/placeholder en local, el admin acepta `dev-only-local`
 - `GEMINI_API_KEY` — opcional (sin key usa FAQ local)
 
 ## 3. RewriteBase para subdirectorio `/netxia/`

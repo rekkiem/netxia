@@ -25,6 +25,7 @@ Options -MultiViews
   RewriteRule ^logs(/.*)?$            - [F,L]
   RewriteRule ^uploads/cv(/.*)?$      - [F,L]
   RewriteRule ^php/phpmailer(/.*)?$   - [F,L]
+  RewriteRule ^blog/_template(/.*)?$  - [F,L]
 
   # Redirigir artículo legacy duplicado
   RewriteRule ^blog/blog-tendencias-ia-2026\.html$ /blog/tendencias-ia-2026.html [R=301,L]

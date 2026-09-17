@@ -1,0 +1,19 @@
+[Thu Sep 17 17:19:10 2026] PHP 8.2.12 Development Server (http://127.0.0.1:8097) started
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44933 Accepted
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44932 Accepted
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44934 Accepted
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44932 [200]: GET /php/admin/
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44932 Closing
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44933 [200]: GET /assets/img/netxia-logo.svg
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44934 [200]: GET /blog/
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44933 Closing
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44934 Closing
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44935 Accepted
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44935 [200]: GET /php/blog.php
+[Thu Sep 17 17:19:31 2026] 127.0.0.1:44935 Closing
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25439 Accepted
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25439 [200]: GET /php/admin/
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25439 Closing
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25440 Accepted
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25440 [302]: POST /php/admin/index.php
+[Thu Sep 17 17:19:41 2026] 127.0.0.1:25440 Closing

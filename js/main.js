@@ -59,12 +59,14 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
   const toggle = () => {
     const open = btn.classList.toggle('open');
     nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
     document.body.style.overflow = open ? 'hidden' : '';
   };
   on(btn, 'click', toggle);
   $$('.mobile-nav a').forEach(a => on(a, 'click', () => {
     btn.classList.remove('open');
     nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }));
 })();
@@ -169,7 +171,7 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
 
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({
-      '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;'
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
 
@@ -180,10 +182,14 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
   }
 
   function articleUrl(a) {
-    // Prefer absolute root paths to work from / and /blog/
-    if (a.url && a.url.startsWith('/')) return a.url;
-    if (a.slug) return '/blog/' + a.slug + '.html';
-    return a.url || '#';
+    const slug = String(a.slug || '').trim();
+    if (/^[a-z0-9-]+$/i.test(slug)) return './blog/' + slug + '.html';
+
+    const url = String(a.url || '').trim();
+    const m = url.match(/(?:^|\/)blog\/([a-z0-9-]+)\.html$/i);
+    if (m) return './blog/' + m[1] + '.html';
+
+    return '#';
   }
 
   function render(articles) {

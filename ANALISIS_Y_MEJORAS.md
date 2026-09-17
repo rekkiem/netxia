@@ -25,7 +25,7 @@ Esta rama corrige ese y otros bugs, limpia restos de FrontPage, endurece segurid
 | 3 | Alta | `php/test_email.php` público | HTTP 200 en producción | Bloqueado en `.htaccess` (`FilesMatch`) |
 | 4 | Media | Artículo legacy `blog-tendencias-ia-2026.html` con links rotos (`contacto.html`, Clash Display) | Duplicado + 404 | Redirect 301 + stub HTML |
 | 5 | Media | `postinfo.html` + `AuthUserFile` FrontPage en `.htaccess` | Ruido/seguridad | Eliminados |
-| 6 | Media | Logo Schema `assets/img/netxia-logo.webp` 404 | Assets vacíos (solo `.gitkeep`) | OG cover SVG + favicon data-URI (logo real pendiente) |
+| 6 | Media | Logo Schema `assets/img/netxia-logo.webp` 404 | Assets sin ese archivo | `assets/img/netxia-logo.svg` y Schema actualizado |
 | 7 | Media | `contacto.html` 404 (link en artículo legacy) | — | Redirect del legacy; contacto vive en `#contacto` |
 | 8 | Baja | Typo “Tuempresa” en blog index | — | Corregido |
 | 9 | Baja | Contraste Lighthouse (`--text-2/3`) | Score accesibilidad | Tokens de color un poco más claros |
@@ -98,7 +98,7 @@ Solo editar `data/blog.json` por FTP y copiar un HTML de plantilla — documenta
 
 ### Corto plazo (esta semana)
 
-- [ ] Subir logo real a `assets/img/netxia-logo.webp` y usarlo en header/Schema  
+- [ ] Reemplazar `assets/img/netxia-logo.svg` por logo final de marca si existe manual corporativo  
 - [ ] Confirmar `SMTP_PASS` y borrar `test_email.php` del servidor si aún está  
 - [ ] Cambiar `BLOG_ADMIN_PASS` a un hash bcrypt  
 - [ ] Probar formularios cotización/postulación end-to-end  

@@ -88,7 +88,7 @@ if (empty(SMTP_PASS)) {
 </div>";
         $mail->AltBody = "Requerimiento de $nombre ($empresa)\nEmail: $email\nServicio: $servicio\nDetalle: $detalle";
         $mail->send();
-        log_event('requirements', "Email Gmail OK → $ADMIN_EMAIL");
+        log_event('requirements', 'Email Gmail OK → ' . ADMIN_EMAIL);
     } catch (\Exception $e) {
         $err = $e->getMessage();
         log_event('requirements', "Gmail ERROR: $err", 'WARN');
