@@ -26,6 +26,11 @@ define('GEMINI_MODEL',   getenv('GEMINI_MODEL') ?: 'gemini-2.5-flash-lite');
 define('CHATBOT_MODEL',  GEMINI_MODEL); // compatibilidad con test_email.php y documentación previa
 define('CHATBOT_LOCAL_FALLBACK', true);
 
+// ─── Admin del Blog (https://netxia.cl/php/admin/) ───────────────────────────
+// Usa una contraseña fuerte. Ideal: password_hash('tu-clave', PASSWORD_DEFAULT)
+// y pega el hash aquí. También acepta texto plano (solo para setup inicial).
+define('BLOG_ADMIN_PASS', 'CambiaEstoNetxia2026');
+
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 define('RATE_LIMIT_CONTACT', 5);   // envíos/hora por IP
 define('RATE_LIMIT_JOB',     3);   // postulaciones/hora por IP

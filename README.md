@@ -128,7 +128,21 @@ RewriteBase /netxia/
 
 ## 📝 AGREGAR ARTÍCULOS AL BLOG
 
+### Opción A — Panel Admin (recomendado, lo más simple)
+
+1. En `php/config.php` define una contraseña:
+   ```php
+   define('BLOG_ADMIN_PASS', 'tu-clave-segura');
+   // o mejor: define('BLOG_ADMIN_PASS', password_hash('tu-clave', PASSWORD_DEFAULT));
+   ```
+2. Visita → `https://netxia.cl/php/admin/`
+3. Crea/edita el artículo (Markdown simple) y pulsa **Guardar**.
+4. El panel actualiza `data/blog.json`, genera `blog/{slug}.html` y regenera `sitemap.xml`.
+
+### Opción B — Manual (FTP)
+
 ### 1. Editar `data/blog.json`
+
 
 ```json
 {

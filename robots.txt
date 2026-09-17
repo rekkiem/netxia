@@ -12,5 +12,6 @@ Disallow: /uploads/
 Disallow: /404.html
 Disallow: /403.html
 Disallow: /500.html
+Disallow: /blog/_template/
 
 Sitemap: https://netxia.cl/sitemap.xml
