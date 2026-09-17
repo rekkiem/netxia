@@ -23,3 +23,6 @@ Thumbs.db
 
 # Mantener estructura
 !.gitkeep
+
+# Admin rate-limit counters
+data/admin/rl_*.json

@@ -156,3 +156,17 @@ Solo editar `data/blog.json` por FTP y copiar un HTML de plantilla — documenta
 ---
 
 *Análisis generado tras revisión del repo y del sitio en vivo (HTTP probes 2026-09-17).*
+
+
+---
+
+## 8. Refuerzos posteriores (misma rama)
+
+- CSRF en todas las acciones del admin (login, logout, save, delete)
+- Rate limit de login: 8 intentos/hora por IP (`data/admin/rl_*.json`)
+- En producción, admin **503** si `BLOG_ADMIN_PASS` es vacío o el placeholder de ejemplo
+- `session_regenerate_id` al login exitoso
+- Escape HTML en loaders del blog (home + `/blog/`) para evitar XSS desde JSON
+- Cuerpos Markdown seed en `data/blog_bodies/` para re-editar los 3 posts existentes
+- `.gitignore` ignora contadores de rate-limit del admin
+

@@ -105,6 +105,9 @@
   const grid = document.getElementById('blogAllGrid');
   const filterBtns = document.querySelectorAll('.filter-btn');
 
+  function escapeHtml(s){
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+  }
   function formatDate(str){
     const d = new Date(str + (String(str).length === 10 ? 'T12:00:00' : ''));
     if (Number.isNaN(d.getTime())) return str;
@@ -127,19 +130,19 @@
     }
     grid.innerHTML = filtered.map((a,i) => `
       <article class="blog-card reveal reveal-delay-${(i%3)+1}">
-        <div class="blog-card-img" role="img" aria-label="${a.imagen_alt || a.titulo}">
+        <div class="blog-card-img" role="img" aria-label="${escapeHtml(a.imagen_alt || a.titulo)}">
           <span style="position:relative;z-index:1;font-size:3rem">${icons[a.categoria]||'📝'}</span>
         </div>
         <div class="blog-card-body">
           <div class="blog-meta">
-            <span class="blog-cat">${a.categoria}</span>
-            <span class="blog-date">${formatDate(a.fecha)}</span>
+            <span class="blog-cat">${escapeHtml(a.categoria)}</span>
+            <span class="blog-date">${escapeHtml(formatDate(a.fecha))}</span>
           </div>
-          <h2 style="font-size:1.05rem;font-family:var(--font-display);font-weight:700;line-height:1.3;margin-bottom:0.65rem">${a.titulo}</h2>
-          <p>${a.resumen || ''}</p>
+          <h2 style="font-size:1.05rem;font-family:var(--font-display);font-weight:700;line-height:1.3;margin-bottom:0.65rem">${escapeHtml(a.titulo)}</h2>
+          <p>${escapeHtml(a.resumen || '')}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem">
-            <a href="${articleUrl(a)}" class="blog-card-link">Leer artículo →</a>
-            <span style="font-size:0.75rem;color:var(--text-3)">⏱️ ${a.lectura || ''}</span>
+            <a href="${escapeHtml(articleUrl(a))}" class="blog-card-link">Leer artículo →</a>
+            <span style="font-size:0.75rem;color:var(--text-3)">⏱️ ${escapeHtml(a.lectura || '')}</span>
           </div>
         </div>
       </article>

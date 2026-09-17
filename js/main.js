@@ -167,6 +167,12 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
     'Cloud & DevOps': '☁️',
   };
 
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;'
+    }[c]));
+  }
+
   function formatDate(str) {
     const d = new Date(str + (String(str).length === 10 ? 'T12:00:00' : ''));
     if (Number.isNaN(d.getTime())) return str;
@@ -188,17 +194,17 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
     }
     grid.innerHTML = list.map((a, i) => `
       <article class="blog-card reveal reveal-delay-${(i % 3) + 1}">
-        <div class="blog-card-img" role="img" aria-label="${a.imagen_alt || a.titulo}">
+        <div class="blog-card-img" role="img" aria-label="${escapeHtml(a.imagen_alt || a.titulo)}">
           <span style="position:relative;z-index:1">${icons[a.categoria] || '📝'}</span>
         </div>
         <div class="blog-card-body">
           <div class="blog-meta">
-            <span class="blog-cat">${a.categoria || 'Blog'}</span>
-            <span class="blog-date">${formatDate(a.fecha)}</span>
+            <span class="blog-cat">${escapeHtml(a.categoria || 'Blog')}</span>
+            <span class="blog-date">${escapeHtml(formatDate(a.fecha))}</span>
           </div>
-          <h3>${a.titulo}</h3>
-          <p>${a.resumen || ''}</p>
-          <a href="${articleUrl(a)}" class="blog-card-link" aria-label="Leer: ${a.titulo}">
+          <h3>${escapeHtml(a.titulo)}</h3>
+          <p>${escapeHtml(a.resumen || '')}</p>
+          <a href="${escapeHtml(articleUrl(a))}" class="blog-card-link" aria-label="Leer: ${escapeHtml(a.titulo)}">
             Leer artículo <span aria-hidden="true">→</span>
           </a>
         </div>

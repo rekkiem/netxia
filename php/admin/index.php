@@ -16,8 +16,14 @@ require_once $configFile;
 netxia_session_start();
 
 // ── Password: define('BLOG_ADMIN_PASS', '...') en config.php (texto plano o hash bcrypt)
-// Default solo para primer setup local — CÁMBIALO en producción
-$adminPass = defined('BLOG_ADMIN_PASS') ? BLOG_ADMIN_PASS : 'CambiaEstoNetxia2026';
+if (!defined('BLOG_ADMIN_PASS') || BLOG_ADMIN_PASS === '' || BLOG_ADMIN_PASS === 'CambiaEstoNetxia2026') {
+    // En producción obliga a configurar una clave real
+    if (!IS_LOCAL) {
+        http_response_code(503);
+        exit('Admin deshabilitado: configura BLOG_ADMIN_PASS en php/config.php (usa password_hash).');
+    }
+}
+$adminPass = defined('BLOG_ADMIN_PASS') ? (string)BLOG_ADMIN_PASS : 'dev-only-local';
 
 function admin_logged_in(): bool {
     return !empty($_SESSION['blog_admin']) && $_SESSION['blog_admin'] === true;
@@ -29,6 +35,35 @@ function admin_require_login(): void {
         exit;
     }
 }
+
+function admin_csrf_token(): string {
+    netxia_session_start();
+    if (empty($_SESSION['admin_csrf'])) {
+        $_SESSION['admin_csrf'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['admin_csrf'];
+}
+
+function admin_csrf_ok(): bool {
+    netxia_session_start();
+    $t = (string)($_POST['admin_csrf'] ?? '');
+    return $t !== '' && !empty($_SESSION['admin_csrf']) && hash_equals($_SESSION['admin_csrf'], $t);
+}
+
+function admin_login_allowed(): bool {
+    // máx 8 intentos / hora por IP (archivo en data/)
+    $ip = preg_replace('/[^a-fA-F0-9\.:]/', '', $_SERVER['REMOTE_ADDR'] ?? '0') ?: '0';
+    $f = DATA_DIR . '/admin/rl_' . md5($ip) . '.json';
+    if (!is_dir(DATA_DIR . '/admin')) @mkdir(DATA_DIR . '/admin', 0755, true);
+    $now = time();
+    $data = is_file($f) ? (json_decode((string)file_get_contents($f), true) ?? []) : [];
+    $data = array_values(array_filter($data, fn($t) => ($now - (int)$t) < 3600));
+    if (count($data) >= 8) return false;
+    $data[] = $now;
+    @file_put_contents($f, json_encode($data), LOCK_EX);
+    return true;
+}
+
 
 function blog_path(): string {
     return DATA_DIR . '/blog.json';
@@ -154,29 +189,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'login') {
-        $pass = (string)($_POST['password'] ?? '');
-        $ok = false;
-        if (str_starts_with($adminPass, '$2y$') || str_starts_with($adminPass, '$2a$')) {
-            $ok = password_verify($pass, $adminPass);
+        if (!admin_csrf_ok()) {
+            $flash = 'Sesión expirada. Recarga e intenta de nuevo.';
+            $view = 'login';
+        } elseif (!admin_login_allowed()) {
+            $flash = 'Demasiados intentos. Espera una hora o contacta al admin.';
+            $view = 'login';
         } else {
-            $ok = hash_equals($adminPass, $pass);
+            $pass = (string)($_POST['password'] ?? '');
+            $ok = false;
+            if (str_starts_with($adminPass, '$2y$') || str_starts_with($adminPass, '$2a$')) {
+                $ok = password_verify($pass, $adminPass);
+            } else {
+                $ok = hash_equals($adminPass, $pass);
+            }
+            if ($ok) {
+                session_regenerate_id(true);
+                $_SESSION['blog_admin'] = true;
+                $_SESSION['admin_csrf'] = bin2hex(random_bytes(32));
+                header('Location: index.php?view=list');
+                exit;
+            }
+            $flash = 'Contraseña incorrecta.';
+            $view = 'login';
         }
-        if ($ok) {
-            $_SESSION['blog_admin'] = true;
-            header('Location: index.php?view=list');
-            exit;
-        }
-        $flash = 'Contraseña incorrecta.';
-        $view = 'login';
     }
 
     if ($action === 'logout') {
-        unset($_SESSION['blog_admin']);
+        if (admin_csrf_ok()) {
+            unset($_SESSION['blog_admin']);
+            $_SESSION['admin_csrf'] = bin2hex(random_bytes(32));
+        }
         header('Location: index.php?view=login');
         exit;
     }
 
     if ($action === 'save' && admin_logged_in()) {
+        if (!admin_csrf_ok()) {
+            $flash = 'Token inválido. Recarga la página.';
+            $view = 'list';
+        } else {
         $posts = load_posts();
         $slug  = trim((string)($_POST['slug'] ?? ''));
         $title = trim((string)($_POST['titulo'] ?? ''));
@@ -230,9 +282,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $view = 'list';
             $editSlug = '';
         }
+        } // csrf ok
     }
 
     if ($action === 'delete' && admin_logged_in()) {
+        if (!admin_csrf_ok()) {
+            $flash = 'Token inválido. Recarga la página.';
+            $view = 'list';
+        } else {
         $slug = slugify((string)($_POST['slug'] ?? ''));
         $posts = array_values(array_filter(load_posts(), fn($p) => ($p['slug'] ?? '') !== $slug));
         save_posts($posts);
@@ -244,6 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         log_event('blog_admin', 'Deleted post: ' . $slug);
         $flash = 'Artículo eliminado: ' . $slug;
         $view = 'list';
+        }
     }
 }
 
@@ -307,6 +365,7 @@ header('Cache-Control: no-store');
 </head>
 <body>
 <div class="wrap">
+<?php $__csrf = htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>
 <?php if ($view === 'login' || !admin_logged_in()): ?>
   <h1>Admin Blog · Netxia</h1>
   <?php if ($flash): ?><div class="flash err"><?= htmlspecialchars($flash) ?></div><?php endif; ?>
@@ -314,6 +373,7 @@ header('Cache-Control: no-store');
     <p class="muted">Ingresa la contraseña definida en <code>BLOG_ADMIN_PASS</code> (config.php).</p>
     <form method="post">
       <input type="hidden" name="action" value="login">
+      <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
       <label>Contraseña</label>
       <input type="password" name="password" required autofocus>
       <p style="margin-top:1rem"><button class="btn" type="submit">Entrar</button></p>
@@ -326,6 +386,7 @@ header('Cache-Control: no-store');
       <a class="btn secondary" href="?view=list">← Lista</a>
       <form method="post" style="display:inline" onsubmit="return confirm('¿Cerrar sesión?')">
         <input type="hidden" name="action" value="logout">
+        <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
         <button class="btn secondary" type="submit">Salir</button>
       </form>
     </div>
@@ -333,6 +394,7 @@ header('Cache-Control: no-store');
   <?php if ($flash): ?><div class="flash"><?= htmlspecialchars($flash) ?></div><?php endif; ?>
   <form method="post" class="card">
     <input type="hidden" name="action" value="save">
+    <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
     <label>Título *</label>
     <input name="titulo" required value="<?= htmlspecialchars((string)$editPost['titulo']) ?>">
     <div class="row">
@@ -387,6 +449,7 @@ header('Cache-Control: no-store');
       <a class="btn" href="?view=edit&slug=new">+ Nuevo</a>
       <form method="post" style="display:inline">
         <input type="hidden" name="action" value="logout">
+        <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
         <button class="btn secondary" type="submit">Salir</button>
       </form>
     </div>
@@ -410,6 +473,7 @@ header('Cache-Control: no-store');
             <a class="btn secondary" href="/blog/<?= urlencode($s) ?>.html" target="_blank" rel="noopener">Ver</a>
             <form method="post" style="display:inline" onsubmit="return confirm('¿Eliminar <?= $s ?>?')">
               <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
               <input type="hidden" name="slug" value="<?= $s ?>">
               <button class="btn danger" type="submit">Borrar</button>
             </form>

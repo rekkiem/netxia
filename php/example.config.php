@@ -27,9 +27,10 @@ define('CHATBOT_MODEL',  GEMINI_MODEL); // compatibilidad con test_email.php y d
 define('CHATBOT_LOCAL_FALLBACK', true);
 
 // ─── Admin del Blog (https://netxia.cl/php/admin/) ───────────────────────────
-// Usa una contraseña fuerte. Ideal: password_hash('tu-clave', PASSWORD_DEFAULT)
-// y pega el hash aquí. También acepta texto plano (solo para setup inicial).
-define('BLOG_ADMIN_PASS', 'CambiaEstoNetxia2026');
+// OBLIGATORIO en producción: cambia este valor o el panel responde 503.
+// Genera un hash en PHP:  php -r "echo password_hash('tu-clave-larga', PASSWORD_DEFAULT);"
+// También acepta texto plano fuerte (solo setup). Nunca dejes el placeholder.
+define('BLOG_ADMIN_PASS', 'REEMPLAZA_CON_CLAVE_O_HASH_BCRYPT');
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 define('RATE_LIMIT_CONTACT', 5);   // envíos/hora por IP
