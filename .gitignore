@@ -1,3 +1,19 @@
-data/sessions/*
-reports-lighthouse-*.json
-/php/config.php
+# Ignorar configuraciones locales o contraseñas
+php/config.php
+
+# Ignorar datos dinámicos generados por usuarios/servidor
+data/requirements/
+data/applications/
+data/sessions/
+
+# Conservar blog.json si lo editas local, de lo contrario ignóralo:
+# data/blog.json
+
+# Ignorar archivos subidos (como currículums)
+uploads/cv/
+
+# Ignorar registros de errores
+logs/
+
+# Permitir explícitamente los archivos .gitkeep para no romper el servidor
+!.gitkeep
