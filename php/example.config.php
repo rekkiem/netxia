@@ -30,7 +30,7 @@ define('CHATBOT_LOCAL_FALLBACK', true);
 // OBLIGATORIO en producción: cambia este valor o el panel responde 503.
 // Genera un hash en PHP:  php -r "echo password_hash('tu-clave-larga', PASSWORD_DEFAULT);"
 // También acepta texto plano fuerte (solo setup). Nunca dejes el placeholder.
-define('BLOG_ADMIN_PASS', 'Rafa.2026');
+define('BLOG_ADMIN_PASS', '');
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 define('RATE_LIMIT_CONTACT', 5);   // envíos/hora por IP
