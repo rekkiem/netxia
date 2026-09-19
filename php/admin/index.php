@@ -13,6 +13,7 @@ if (!is_file($configFile)) {
     exit('Falta php/config.php. Copia example.config.php y configúralo.');
 }
 require_once $configFile;
+require_once dirname(__DIR__) . '/mailer.php';
 netxia_session_start();
 
 // ── Password: define('BLOG_ADMIN_PASS', '...') en config.php (texto plano o hash bcrypt)
@@ -205,8 +206,58 @@ function update_sitemap(array $posts): void {
     @file_put_contents($root . '/sitemap.xml', $xml, LOCK_EX);
 }
 
+
+function admin_retry_lead(string $type, string $id): array {
+    $lead = lead_find($type, $id);
+    if (!$lead) return ['ok' => false, 'msg' => 'Lead no encontrado'];
+    try {
+        $mail = create_mailer();
+        if ($type === 'requirements') {
+            netxia_add_admin_recipients($mail, 'Netxia');
+            $mail->addReplyTo((string)($lead['email'] ?? ''), (string)($lead['nombre'] ?? ''));
+            $empresa = (string)($lead['empresa'] ?? '');
+            $servicio = (string)($lead['servicio'] ?? '');
+            $mail->Subject = "🔔 Requerimiento (reintento): $empresa ($servicio)";
+            $mail->isHTML(true);
+            $mail->Body = '<p><strong>Reintento</strong></p><p>' . htmlspecialchars($empresa) . ' — '
+                . htmlspecialchars((string)($lead['nombre'] ?? '')) . '<br>'
+                . htmlspecialchars((string)($lead['email'] ?? '')) . '</p><p>'
+                . nl2br(htmlspecialchars((string)($lead['detalle'] ?? ''))) . '</p><p>ID: '
+                . htmlspecialchars($id) . '</p>';
+            $mail->AltBody = 'Reintento ' . $id;
+            $log = 'requirements';
+        } else {
+            netxia_add_admin_recipients($mail, 'Netxia RRHH');
+            $mail->addReplyTo((string)($lead['email'] ?? ''), (string)($lead['nombre'] ?? ''));
+            $nombre = (string)($lead['nombre'] ?? '');
+            $cargo = (string)($lead['cargo'] ?? '');
+            $cv = (string)($lead['cv_archivo'] ?? '');
+            if ($cv !== '' && is_file(UPLOAD_DIR . '/' . $cv)) {
+                $mail->addAttachment(UPLOAD_DIR . '/' . $cv, 'CV_' . $nombre);
+            }
+            $mail->Subject = "👤 Postulación (reintento): $nombre — $cargo";
+            $mail->isHTML(true);
+            $mail->Body = '<p><strong>Reintento</strong></p><p>' . htmlspecialchars($nombre) . ' — '
+                . htmlspecialchars($cargo) . '</p><p>'
+                . nl2br(htmlspecialchars((string)($lead['carta'] ?? ''))) . '</p><p>ID: '
+                . htmlspecialchars($id) . '</p>';
+            $mail->AltBody = 'Reintento job ' . $id;
+            $log = 'jobs';
+        }
+        $via = null; $errors = null;
+        $ok = netxia_send($mail, $log, $via, $errors);
+        lead_set_notification($type, $id, $ok, $via, $ok ? null : $errors);
+        return $ok ? ['ok' => true, 'msg' => "Notificado vía $via"] : ['ok' => false, 'msg' => $errors ?: 'Fallo'];
+    } catch (Throwable $e) {
+        lead_set_notification($type, $id, false, null, $e->getMessage());
+        return ['ok' => false, 'msg' => $e->getMessage()];
+    }
+}
+
 $flash = '';
-$view  = $_GET['view'] ?? (admin_logged_in() ? 'list' : 'login');
+$flashErr = false;
+$leadFilter = $_GET['filter'] ?? 'all';
+$view  = $_GET['view'] ?? (admin_logged_in() ? 'leads' : 'login');
 $editSlug = $_GET['slug'] ?? '';
 
 // ── Actions ──────────────────────────────────────────────────────────
@@ -233,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true);
                 $_SESSION['blog_admin'] = true;
                 $_SESSION['admin_csrf'] = bin2hex(random_bytes(32));
-                header('Location: index.php?view=list');
+                header('Location: index.php?view=leads');
                 exit;
             }
             admin_record_failed_login();
@@ -332,6 +383,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
+    if ($action === 'retry_lead' && admin_logged_in()) {
+        $view = 'leads';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            $type = ($_POST['lead_type'] ?? '') === 'applications' ? 'applications' : 'requirements';
+            $res = admin_retry_lead($type, (string)($_POST['lead_id'] ?? ''));
+            $flash = $res['msg']; $flashErr = !$res['ok'];
+        }
+    }
+    if ($action === 'probe_token' && admin_logged_in()) {
+        $view = 'mail';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            $p = gmail_probe_token();
+            $flash = $p['msg']; $flashErr = !$p['ok'];
+        }
+    }
+    if ($action === 'test_send' && admin_logged_in()) {
+        $view = 'mail';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            try {
+                $mail = create_mailer();
+                netxia_add_admin_recipients($mail, 'Netxia');
+                $mail->Subject = '✅ Test Netxia admin ' . date('H:i:s');
+                $mail->isHTML(true);
+                $mail->Body = '<p>Prueba panel admin — ' . date('c') . '</p>';
+                $mail->AltBody = 'Test Netxia';
+                $via = null; $errors = null;
+                $ok = netxia_send($mail, 'test', $via, $errors);
+                $flash = $ok ? ("OK vía $via → " . implode(', ', netxia_admin_emails())) : ('FALLÓ: ' . $errors);
+                $flashErr = !$ok;
+            } catch (Throwable $e) {
+                $flash = $e->getMessage(); $flashErr = true;
+            }
+        }
+    }
+
 // Load edit form data
 $editPost = [
     'slug' => '', 'titulo' => '', 'resumen' => '', 'categoria' => 'Inteligencia Artificial',
@@ -363,7 +453,7 @@ header('Cache-Control: no-store');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Admin Blog · Netxia</title>
+  <title>Admin · Netxia</title>
   <style>
     :root { --bg:#06091A; --card:#0D1230; --border:#1a2040; --text:#EEF2FF; --muted:#8B9DC3; --cyan:#00D2FF; --ok:#00E887; --err:#ff6b7a; }
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
@@ -388,6 +478,17 @@ header('Cache-Control: no-store');
     .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
     .check{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
     .check input{width:auto}
+
+    .nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+    .nav a{padding:.4rem .8rem;border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:.9rem}
+    .nav a.active{border-color:var(--cyan);color:var(--cyan)}
+    .badge{display:inline-block;padding:.12rem .4rem;border-radius:6px;font-size:.75rem;font-weight:600}
+    .badge.ok{background:rgba(0,232,135,.15);color:var(--ok)}
+    .badge.bad{background:rgba(255,107,122,.15);color:var(--err)}
+    .badge.warn{background:rgba(255,184,0,.12);color:#FFB800}
+    form.inline{display:inline;margin-left:.3rem}
+    pre.log{background:#080C20;border-radius:8px;padding:.75rem;font-size:.75rem;color:var(--muted);overflow:auto;max-height:200px;white-space:pre-wrap}
+    .flash.err{background:rgba(255,107,122,.12);border-color:var(--err);color:var(--err)}
   </style>
 </head>
 <body>
@@ -395,7 +496,7 @@ header('Cache-Control: no-store');
 <?php $__csrf = htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>
 <?php if ($view === 'login' || !admin_logged_in()): ?>
   <h1>Admin Blog · Netxia</h1>
-  <?php if ($flash): ?><div class="flash err"><?= htmlspecialchars($flash) ?></div><?php endif; ?>
+  <?php if ($flash): ?><div class="flash <?= !empty($flashErr) ? 'err' : '' ?>"><?= htmlspecialchars($flash) ?></div><?php endif; ?>
   <div class="card" style="max-width:400px">
     <?php if (!$adminPassConfigured && IS_LOCAL): ?>
       <p class="muted">Modo local sin <code>BLOG_ADMIN_PASS</code>: usa <code>dev-only-local</code> o configura una clave en <code>php/config.php</code>.</p>
@@ -410,7 +511,107 @@ header('Cache-Control: no-store');
       <p style="margin-top:1rem"><button class="btn" type="submit">Entrar</button></p>
     </form>
   </div>
-<?php elseif ($view === 'edit'): admin_require_login(); ?>
+<?php else: admin_require_login(); ?>
+  <div class="nav">
+    <a href="?view=leads" class="<?= $view === 'leads' ? 'active' : '' ?>">Leads</a>
+    <a href="?view=mail" class="<?= $view === 'mail' ? 'active' : '' ?>">Correo</a>
+    <a href="?view=list" class="<?= in_array($view, ['list','edit'], true) ? 'active' : '' ?>">Blog</a>
+    <form method="post" class="inline" style="margin-left:auto">
+      <input type="hidden" name="action" value="logout">
+      <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
+      <button class="btn secondary" type="submit">Salir</button>
+    </form>
+  </div>
+  <?php if ($flash): ?><div class="flash <?= !empty($flashErr) ? 'err' : '' ?>"><?= htmlspecialchars($flash) ?></div><?php endif; ?>
+
+<?php if ($view === 'leads'):
+  $reqs = leads_list('requirements');
+  $apps = leads_list('applications');
+  $all = array_merge(
+    array_map(fn($r) => $r + ['_kind' => 'requirements'], $reqs),
+    array_map(fn($r) => $r + ['_kind' => 'applications'], $apps)
+  );
+  usort($all, fn($a, $b) => strcmp((string)($b['fecha'] ?? ''), (string)($a['fecha'] ?? '')));
+  if ($leadFilter === 'pending') $all = array_values(array_filter($all, fn($r) => ($r['notificado'] ?? false) !== true));
+  elseif ($leadFilter === 'ok') $all = array_values(array_filter($all, fn($r) => ($r['notificado'] ?? false) === true));
+  $pendingN = count(array_filter(array_merge($reqs, $apps), fn($r) => ($r['notificado'] ?? false) !== true));
+?>
+  <div class="top">
+    <h1>Leads (<?= count($all) ?>) · pendientes: <?= (int)$pendingN ?></h1>
+    <div>
+      <a class="btn secondary" href="?view=leads&filter=all">Todos</a>
+      <a class="btn secondary" href="?view=leads&filter=pending">No notificados</a>
+      <a class="btn secondary" href="?view=leads&filter=ok">Notificados</a>
+    </div>
+  </div>
+  <div class="card">
+  <?php if (!$all): ?><p class="muted">Sin leads en data/.</p><?php else: ?>
+    <table>
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Contacto</th><th>Correo</th><th></th></tr></thead>
+      <tbody>
+      <?php foreach ($all as $r):
+        $kind = $r['_kind'] ?? 'requirements';
+        $id = (string)($r['id'] ?? '');
+        $notif = $r['notificado'] ?? null;
+        if ($notif === true) $badge = '<span class="badge ok">OK' . (!empty($r['notif_via']) ? ' · ' . htmlspecialchars((string)$r['notif_via']) : '') . '</span>';
+        elseif ($notif === false) $badge = '<span class="badge bad">No notificado</span>';
+        else $badge = '<span class="badge warn">Sin estado</span>';
+        $who = $kind === 'requirements'
+          ? htmlspecialchars((string)($r['empresa'] ?? '')) . '<br><span class="muted">' . htmlspecialchars((string)($r['nombre'] ?? '')) . ' · ' . htmlspecialchars((string)($r['email'] ?? '')) . '</span>'
+          : htmlspecialchars((string)($r['nombre'] ?? '')) . '<br><span class="muted">' . htmlspecialchars((string)($r['cargo'] ?? '')) . ' · ' . htmlspecialchars((string)($r['email'] ?? '')) . '</span>';
+      ?>
+        <tr>
+          <td class="muted"><?= htmlspecialchars(substr((string)($r['fecha'] ?? ''), 0, 16)) ?></td>
+          <td><?= $kind === 'requirements' ? 'Cotización' : 'Postulación' ?></td>
+          <td><?= $who ?></td>
+          <td><?= $badge ?><?php if (!empty($r['notif_error'])): ?><div class="muted"><?= htmlspecialchars(mb_substr((string)$r['notif_error'], 0, 90)) ?></div><?php endif; ?></td>
+          <td><?php if ($notif !== true): ?>
+            <form method="post" class="inline" onsubmit="return confirm('¿Reintentar correo?')">
+              <input type="hidden" name="action" value="retry_lead">
+              <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
+              <input type="hidden" name="lead_type" value="<?= htmlspecialchars($kind) ?>">
+              <input type="hidden" name="lead_id" value="<?= htmlspecialchars($id) ?>">
+              <button class="btn" type="submit">Reintentar</button>
+            </form>
+          <?php else: ?><span class="muted">—</span><?php endif; ?></td>
+        </tr>
+      <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
+  </div>
+  <p class="muted">Leads en JSON. El correo es notificación (reintento = Gmail API).</p>
+
+<?php elseif ($view === 'mail'):
+  $health = netxia_mail_health(false);
+?>
+  <h1>Salud del correo</h1>
+  <div class="card">
+    <p>Gmail API: <?= $health['gmail_api_configured'] ? '<span class="badge ok">credenciales presentes</span>' : '<span class="badge bad">falta GMAIL_* en config.php</span>' ?></p>
+    <p>SMTP_PASS: <?= $health['smtp_pass_set'] ? '<span class="badge ok">set</span>' : '<span class="badge warn">vacío</span>' ?> (cascada 2ª, suele fallar en 50webs)</p>
+    <p>ADMIN_EMAIL: <code><?= htmlspecialchars((string)$health['admin_email']) ?></code></p>
+    <p>ADMIN_EMAIL_COPY: <?= $health['admin_email_copy'] ? '<code>' . htmlspecialchars((string)$health['admin_email_copy']) . '</code>' : '<span class="badge warn">no definido</span>' ?></p>
+    <p>Destinatarios: <?= htmlspecialchars(implode(', ', $health['recipients']) ?: '(ninguno)') ?></p>
+    <form method="post" class="inline">
+      <input type="hidden" name="action" value="probe_token">
+      <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
+      <button class="btn" type="submit">Probar access token</button>
+    </form>
+    <form method="post" class="inline" onsubmit="return confirm('¿Enviar email de prueba?')">
+      <input type="hidden" name="action" value="test_send">
+      <input type="hidden" name="admin_csrf" value="<?= $__csrf ?>">
+      <button class="btn secondary" type="submit">Email de prueba</button>
+    </form>
+  </div>
+  <?php if (!empty($health['last_email_errors'])): ?>
+  <div class="card">
+    <p><strong>email_errors.log</strong></p>
+    <pre class="log"><?= htmlspecialchars(implode("\n", $health['last_email_errors'])) ?></pre>
+  </div>
+  <?php endif; ?>
+  <div class="card"><p class="muted">Guía: HOTFIX_MAIL.md · App OAuth en <strong>Producción</strong> · scope gmail.send</p></div>
+
+<?php elseif ($view === 'edit'): ?>
   <div class="top">
     <h1><?= $editSlug === 'new' || $editSlug === '' ? 'Nuevo artículo' : 'Editar: ' . htmlspecialchars($editSlug) ?></h1>
     <div>
@@ -473,7 +674,7 @@ header('Cache-Control: no-store');
     </p>
     <p class="muted">Al guardar se actualiza <code>data/blog.json</code>, se genera <code>blog/slug.html</code> y se regenera el sitemap.</p>
   </form>
-<?php else: admin_require_login(); $posts = load_posts(); ?>
+<?php else: $posts = load_posts(); ?>
   <div class="top">
     <h1>Artículos del blog (<?= count($posts) ?>)</h1>
     <div>
@@ -520,7 +721,8 @@ header('Cache-Control: no-store');
     <?php endif; ?>
   </div>
   <p class="muted">Hosting 50webs Free: sin MySQL. Todo vive en JSON + HTML estático. Cambia <code>BLOG_ADMIN_PASS</code> en config.php.</p>
-<?php endif; ?>
+<?php endif; /* views leads|mail|edit|list */ ?>
+<?php endif; /* login */ ?>
 </div>
 </body>
 </html>
