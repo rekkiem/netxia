@@ -1,30 +1,34 @@
-# HOTFIX — Correo (Gmail API por HTTPS)
+# HOTFIX — Correo de formularios (Gmail API por HTTPS)
 
-El hosting solo permite salida a hosts Google. SMTP da `Permission denied (13)`.
+**Causa:** 50webs aplica lista blanca de salida. Solo pasan hosts Google
+(`gmail.googleapis.com`, `www.googleapis.com`). SMTP y APIs de terceros → errno 13.
 
-## Código
-- `php/mailer.php` — cascada Gmail API → SMTP → mail()
-- Leads con `notificado` / reintento en admin
-- `ADMIN_EMAIL_COPY` para respaldo (Gmail distinto del From)
+**Código:** `php/mailer.php` — cascada **Gmail API → SMTP → mail()**.  
+Leads se guardan **antes** de notificar. Admin: **Blog | Leads | Correo**.
 
-## Config (servidor)
-1. Google Cloud: Gmail API + OAuth app en **Producción** + scope `gmail.send`
-2. OAuth Playground → refresh token
-3. En `php/config.php`:
+Ver **DEPLOY_PROD.md** para pasos de producción.
+
+## Config mínima en `php/config.php` (servidor)
+
 ```php
-define('GMAIL_CLIENT_ID', '….apps.googleusercontent.com');
+define('GMAIL_CLIENT_ID',     '….apps.googleusercontent.com');
 define('GMAIL_CLIENT_SECRET', '…');
-define('GMAIL_REFRESH_TOKEN', '1//…');
-define('ADMIN_EMAIL', 'contacto@netxia.cl');
-define('ADMIN_EMAIL_COPY', 'tu-respaldo@gmail.com');
+define('GMAIL_REFRESH_TOKEN', '1//0…');
+define('ADMIN_EMAIL',      'contacto@netxia.cl');
+define('ADMIN_EMAIL_COPY', 'respaldo@gmail.com'); // ≠ netxia.chile@gmail.com
 ```
 
-## Probar
-Admin `/php/admin/` → **Correo** → token + test send → formularios reales → **Leads**.
+## Archivos
 
-## Si falla
-| Síntoma | Acción |
+| Archivo | Rol |
 |---|---|
-| invalid_grant | Token mal / app en Testing |
-| Couldn't connect | Allowlist — VPS |
-| send OK, no llega a contacto@ | Webmail 50webs; revisa COPY |
+| `php/mailer.php` | Gmail API, cascada, leads, reintento |
+| `php/submit_*.php` | Persistencia + notificación + estado |
+| `php/admin/index.php` | Blog + Leads + salud correo |
+
+## Criterio de resuelto
+
+- Formulario real llega a contacto@ **y** a COPY
+- Fallo → lead "No notificado" + Reintentar en admin
+- Token caído visible en pestaña Correo
+- Sin scripts de diagnóstico sueltos en el servidor
