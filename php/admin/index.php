@@ -682,7 +682,8 @@ header('Cache-Control: no-store');
     <?php endif; ?>
   </div>
   <p class="muted">Hosting 50webs Free: sin MySQL. Todo vive en JSON + HTML estático. Cambia <code>BLOG_ADMIN_PASS</code> en config.php.</p>
-<?php endif; ?>
+<?php endif; /* views leads|mail|edit|list */ ?>
+<?php endif; /* login */ ?>
 </div>
 </body>
 </html>
