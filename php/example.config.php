@@ -21,10 +21,22 @@ define('ADMIN_EMAIL',    'contacto@netxia.cl');         // Destino de los formul
 // ─── Gemini API + fallback local (Chatbot) ───────────────────────────────────
 // Crea una API key gratuita en https://aistudio.google.com/app/apikey
 // Si la key queda vacía, chatbot.php responde con FAQ local sin costo.
-define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: 'AQ.xxx'); // ← pega aquí tu AI Studio key si 50webs no soporta variables de entorno
+define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: ''); // ← pega aquí tu AI Studio key si 50webs no soporta variables de entorno
 define('GEMINI_MODEL',   getenv('GEMINI_MODEL') ?: 'gemini-2.5-flash-lite');
 define('CHATBOT_MODEL',  GEMINI_MODEL); // compatibilidad con test_email.php y documentación previa
 define('CHATBOT_LOCAL_FALLBACK', true);
+
+// ─── Admin del Blog (https://netxia.cl/php/admin/) ───────────────────────────
+// OBLIGATORIO en producción: cambia este valor o el panel responde 503.
+// Genera un hash en PHP:  php -r "echo password_hash('tu-clave-larga', PASSWORD_DEFAULT);"
+// También acepta texto plano fuerte (solo setup). Nunca dejes el placeholder.
+define('BLOG_ADMIN_PASS', '');
+
+// ─── Gmail API (envío por HTTPS — el hosting bloquea SMTP) ───────────────────
+// Ver HOTFIX_MAIL.md para obtener estos 3 valores (una sola vez, ~10 min).
+define('GMAIL_CLIENT_ID',     '');   // ...apps.googleusercontent.com
+define('GMAIL_CLIENT_SECRET', '');
+define('GMAIL_REFRESH_TOKEN', '');   // 1//0g...
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 define('RATE_LIMIT_CONTACT', 5);   // envíos/hora por IP

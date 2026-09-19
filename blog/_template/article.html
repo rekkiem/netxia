@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} | Blog Netxia</title>
+  <meta name="description" content="{{SUMMARY}}">
+  <link rel="canonical" href="https://netxia.cl/blog/{{SLUG}}.html">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{SUMMARY}}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://netxia.cl/blog/{{SLUG}}.html">
+  <meta property="og:locale" content="es_CL">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>⚡</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <nav class="nav-inner" aria-label="Navegación">
+      <a href="../index.html" class="logo">NETXIA</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#servicios">Servicios</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../index.html#requerimientos" class="nav-cta">Cotizar →</a></li>
+      </ul>
+      <button class="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+    </nav>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Menú móvil">
+  <a href="../index.html">Inicio</a>
+  <a href="./">Blog</a>
+  <a href="../index.html#requerimientos">Cotizar</a>
+</nav>
+
+<section class="article-hero">
+  <div class="container" style="max-width:800px">
+    <span class="article-category">{{CATEGORY}}</span>
+    <h1 class="article-title">{{TITLE_HTML}}</h1>
+    <p class="article-meta-line" style="color:var(--text-2);margin-top:1rem;font-size:0.95rem">
+      📅 {{DATE_HUMAN}} · 👤 {{AUTHOR}} · ⏱️ {{READ_TIME}}
+    </p>
+  </div>
+</section>
+
+<article class="section-py">
+  <div class="container article-body" style="max-width:720px;margin:0 auto;color:var(--text-2);line-height:1.8">
+{{BODY_HTML}}
+    <div style="margin-top:3rem;padding:2rem;border-radius:16px;border:1px solid var(--border);background:var(--bg-card);text-align:center">
+      <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:0.75rem">¿Necesitas ayuda con este tema?</h2>
+      <p style="margin-bottom:1.25rem">Agenda un diagnóstico sin costo con el equipo Netxia.</p>
+      <a href="../index.html#requerimientos" class="btn-primary">Solicitar cotización →</a>
+    </div>
+  </div>
+</article>
+
+<footer style="background:var(--bg-deep);border-top:1px solid var(--border);padding:2rem 0;text-align:center">
+  <div class="container">
+    <a href="../index.html" class="logo" style="display:inline-block;margin-bottom:1rem">NETXIA</a>
+    <p style="color:var(--text-3);font-size:0.82rem">© 2026 Netxia Consultores TI · Santiago, Chile</p>
+  </div>
+</footer>
+<script src="../js/main.js?v=3" defer></script>
+</body>
+</html>

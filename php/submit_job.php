@@ -7,6 +7,7 @@ ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 error_reporting(E_ERROR);
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mailer.php';
 netxia_session_start();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -31,7 +32,9 @@ $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $telefono    = sanitize($_POST['telefono']    ?? '', 20);
 $cargo       = sanitize($_POST['cargo']       ?? '', 100);
 $experiencia = sanitize($_POST['experiencia'] ?? '', 50);
-$linkedin    = sanitize($_POST['linkedin']    ?? '', 200);
+$linkedinRaw = trim((string)($_POST['linkedin'] ?? ''));
+$linkedin    = $linkedinRaw !== '' ? filter_var($linkedinRaw, FILTER_VALIDATE_URL) : '';
+$linkedin    = $linkedin ? sanitize($linkedin, 200) : '';
 $carta       = sanitize($_POST['carta']       ?? '', 3000);
 $habilidades = sanitize($_POST['habilidades'] ?? '', 500);
 
@@ -39,6 +42,7 @@ $errs = [];
 if (empty($nombre))          $errs[] = 'Nombre requerido';
 if (!$email)                 $errs[] = 'Email inválido';
 if (empty($cargo))           $errs[] = 'Cargo requerido';
+if ($linkedinRaw !== '' && !$linkedin) $errs[] = 'LinkedIn inválido';
 if (mb_strlen($carta) < 30) $errs[] = 'Carta muy corta (mín. 30 caracteres)';
 if ($errs) json_response(false, implode('. ', $errs));
 
@@ -64,7 +68,12 @@ if (!empty($_FILES['cv']['tmp_name']) && $_FILES['cv']['error'] === UPLOAD_ERR_O
     }
     if (!in_array($mime, ALLOWED_CV_TYPES)) json_response(false, 'Solo se aceptan PDF o DOCX.');
 
-    $ext         = ($mime === 'application/pdf') ? 'pdf' : 'docx';
+    $extMap = [
+        'application/pdf' => 'pdf',
+        'application/msword' => 'doc',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+    ];
+    $ext         = $extMap[$mime] ?? strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $safeName    = preg_replace('/[^a-z0-9]/i', '_', $nombre);
     $cv_filename = date('Ymd_His') . '_' . $safeName . '.' . $ext;
     if (!is_dir(UPLOAD_DIR)) @mkdir(UPLOAD_DIR, 0755, true);
@@ -93,7 +102,7 @@ log_event('jobs', "Guardado: $nombre — $cargo — $email");
 
 // Enviar email vía Gmail SMTP
 $emailNote = '';
-if (empty(SMTP_PASS)) {
+if (empty(SMTP_PASS) && !gmail_api_configured()) {
     $emailNote = IS_LOCAL ? ' [Dev: SMTP_PASS vacío]' : '';
     log_event('jobs', 'SMTP_PASS vacío', 'WARN');
 } else {
@@ -122,8 +131,8 @@ if (empty(SMTP_PASS)) {
   <p style='margin-top:16px;color:#8B9DC3;font-size:12px'>" . ($cv_filename ? "CV adjunto: $cv_filename" : "Sin CV adjunto") . " | " . date('d/m/Y H:i:s') . "</p>
 </div>";
         $mail->AltBody = "Postulación de $nombre para $cargo\nEmail: $email\nCarta: $carta";
-        $mail->send();
-        log_event('jobs', "Email Gmail OK → $ADMIN_EMAIL");
+        $sent = netxia_send($mail, 'jobs', $via, $sendErrors);
+        if (!$sent) $emailNote = IS_LOCAL ? " [Dev: Error Gmail — $sendErrors]" : '';
     } catch (\Exception $e) {
         $err = $e->getMessage();
         log_event('jobs', "Gmail ERROR: $err", 'WARN');

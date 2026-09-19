@@ -7,6 +7,7 @@ ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 error_reporting(E_ERROR);
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mailer.php';
 netxia_session_start();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -61,7 +62,7 @@ log_event('requirements', "Guardado: $empresa — $email");
 
 // Enviar email vía Gmail SMTP
 $emailNote = '';
-if (empty(SMTP_PASS)) {
+if (empty(SMTP_PASS) && !gmail_api_configured()) {
     $emailNote = IS_LOCAL ? ' [Dev: SMTP_PASS vacío — configura App Password]' : '';
     log_event('requirements', 'SMTP_PASS vacío', 'WARN');
 } else {
@@ -87,8 +88,8 @@ if (empty(SMTP_PASS)) {
   <p style='margin-top:20px;color:#8B9DC3;font-size:12px'>Recibido: " . date('d/m/Y H:i:s') . " | IP: " . ($_SERVER['REMOTE_ADDR'] ?? '') . "</p>
 </div>";
         $mail->AltBody = "Requerimiento de $nombre ($empresa)\nEmail: $email\nServicio: $servicio\nDetalle: $detalle";
-        $mail->send();
-        log_event('requirements', "Email Gmail OK → $ADMIN_EMAIL");
+        $sent = netxia_send($mail, 'requirements', $via, $sendErrors);
+        if (!$sent) $emailNote = IS_LOCAL ? " [Dev: Error SMTP — $sendErrors]" : '';
     } catch (\Exception $e) {
         $err = $e->getMessage();
         log_event('requirements', "Gmail ERROR: $err", 'WARN');

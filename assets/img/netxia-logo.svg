@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Netxia</title>
+  <desc id="desc">Logo de Netxia Consultores TI</desc>
+  <rect width="512" height="512" rx="96" fill="#06091A"/>
+  <path d="M128 344V168h48l160 96v-96h48v176h-48L176 248v96h-48Z" fill="#EEF2FF"/>
+  <path d="M176 168h48l112 176h-48L176 168Z" fill="#00D2FF" opacity=".92"/>
+  <path d="M224 344h-48l112-176h48L224 344Z" fill="#00E887" opacity=".9"/>
+  <circle cx="384" cy="168" r="18" fill="#7C3AED"/>
+</svg>
