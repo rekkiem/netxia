@@ -26,3 +26,9 @@ Thumbs.db
 
 # Admin rate-limit counters
 data/admin/rl_*.json
+
+php-server.err.log
+php-server.out.log
+php/mail_test.php
+php/net_probe.php
+php/net_probe2.php
