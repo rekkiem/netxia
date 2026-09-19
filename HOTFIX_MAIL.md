@@ -1,44 +1,34 @@
 # HOTFIX — Correo de formularios (Gmail API por HTTPS)
 
-**Causa:** el hosting solo permite salida a una lista blanca (`gmail.googleapis.com`, `www.googleapis.com`).
-SMTP (Gmail, Brevo, local) y `oauth2.googleapis.com` dan `errno 13`. La rama `fix/portal-blog-admin` no causó esto.
+**Causa:** 50webs aplica lista blanca de salida. Solo pasan hosts Google
+(`gmail.googleapis.com`, `www.googleapis.com`). SMTP y APIs de terceros → errno 13.
 
-**Solución:** enviar con la **Gmail API** (HTTPS) y renovar el token contra `www.googleapis.com/oauth2/v4/token`.
-Cascada: Gmail API → SMTP → `mail()`. Si todo falla, queda en `logs/email_errors.log` (el lead ya está guardado en `data/`).
+**Código:** `php/mailer.php` — cascada **Gmail API → SMTP → mail()**.  
+Leads se guardan **antes** de notificar. Admin: **Blog | Leads | Correo**.
 
-## 1. Credenciales de Google (una vez, ~10 min) — con la cuenta netxia.chile@gmail.com
-1. https://console.cloud.google.com → proyecto nuevo `netxia-mail`.
-2. *APIs y servicios → Biblioteca* → habilitar **Gmail API**.
-3. *Pantalla de consentimiento OAuth* → Externo → nombre y correo → agregar el permiso `.../auth/gmail.send`
-   → **Publicar la app ("En producción")**. En modo *Testing* el refresh token muere a los 7 días.
-4. *Credenciales → Crear ID de cliente OAuth → Aplicación web* →
-   URI de redirección autorizada: `https://developers.google.com/oauthplayground` → copiar **Client ID** y **Client secret**.
-5. https://developers.google.com/oauthplayground → ⚙ → *Use your own OAuth credentials* → pegar ID y secret →
-   en Step 1 escribir el scope `https://www.googleapis.com/auth/gmail.send` → *Authorize APIs* → entrar con netxia.chile@gmail.com
-   (si dice "app no verificada": *Avanzado → Ir a…*) → Step 2 *Exchange authorization code for tokens* → copiar **Refresh token** (`1//0...`).
-6. En el `php/config.php` del servidor (no versionado) agregar:
+Ver **DEPLOY_PROD.md** para pasos de producción.
+
+## Config mínima en `php/config.php` (servidor)
+
 ```php
-define('GMAIL_CLIENT_ID',     'xxxx.apps.googleusercontent.com');
-define('GMAIL_CLIENT_SECRET', 'xxxx');
-define('GMAIL_REFRESH_TOKEN', '1//0xxxx');
+define('GMAIL_CLIENT_ID',     '….apps.googleusercontent.com');
+define('GMAIL_CLIENT_SECRET', '…');
+define('GMAIL_REFRESH_TOKEN', '1//0…');
+define('ADMIN_EMAIL',      'contacto@netxia.cl');
+define('ADMIN_EMAIL_COPY', 'respaldo@gmail.com'); // ≠ netxia.chile@gmail.com
 ```
 
-## 2. Subir por FTP (solo estos 4)
-`php/mailer.php` · `php/submit_requirements.php` · `php/submit_job.php` · `php/mail_test.php`
-(en `mail_test.php` cambia `CAMBIA_ESTO` por una cadena larga).
+## Archivos
 
-## 3. Probar
-- `https://netxia.cl/php/mail_test.php?k=TOKEN` → debe decir `Access token … OK`
-- `https://netxia.cl/php/mail_test.php?k=TOKEN&send=1` → `OK vía gmail_api` y llega a contacto@netxia.cl
-- Luego enviar una cotización y una postulación reales desde el sitio.
+| Archivo | Rol |
+|---|---|
+| `php/mailer.php` | Gmail API, cascada, leads, reintento |
+| `php/submit_*.php` | Persistencia + notificación + estado |
+| `php/admin/index.php` | Blog + Leads + salud correo |
 
-## 4. Limpiar
-Borrar del servidor: `mail_test.php`, `net_probe.php`, `net_probe2.php`, `test_email.php`.
+## Criterio de resuelto
 
-## Si el paso 3 falla
-- `token: ... HTTP 400 invalid_grant` → refresh token mal copiado o app aún en *Testing*.
-- `token: ... Couldn't connect` → el hosting también bloquea el endpoint de tokens en `www.googleapis.com`:
-  no hay ruta de correo saliente en ese hosting → migrar el sitio a la VPS.
-
-## Recuperar leads de las pruebas fallidas (FTP)
-`data/requirements/AAAA-MM.json` (cotizaciones) · `data/applications/AAAA-MM.json` (postulaciones) · `uploads/cv/`
+- Formulario real llega a contacto@ **y** a COPY
+- Fallo → lead "No notificado" + Reintentar en admin
+- Token caído visible en pestaña Correo
+- Sin scripts de diagnóstico sueltos en el servidor

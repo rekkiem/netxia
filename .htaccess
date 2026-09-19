@@ -36,7 +36,7 @@ Options -MultiViews
 </IfModule>
 
 # Bloquear config y utilidades de prueba
-<FilesMatch "^(config\.php|example\.config\.php|test_email\.php)$">
+<FilesMatch "^(config\.php|example\.config\.php|test_email\.php|mail_test\.php|net_probe\.php|net_probe2\.php)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

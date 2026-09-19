@@ -1,7 +1,7 @@
 <?php
 /**
  * NETXIA — Configuración Central v2.0 FINAL
- * SMTP: Gmail (funciona en 50webs Free + XAMPP local)
+ * Envío: Gmail API (HTTPS) primario en 50webs Free · SMTP solo local/cascada
  *
  * ⚠️  ANTES DE SUBIR AL SERVIDOR:
  *  1. Genera tu App Password en: https://myaccount.google.com/apppasswords
@@ -16,7 +16,8 @@ define('SMTP_USER',      'netxia.chile@gmail.com');     // Tu cuenta Gmail
 define('SMTP_PASS',      '');                           // ← App Password de 16 chars
 define('SMTP_FROM',      'netxia.chile@gmail.com');
 define('SMTP_FROM_NAME', 'Netxia Consultores TI');
-define('ADMIN_EMAIL',    'contacto@netxia.cl');         // Destino de los formularios
+define('ADMIN_EMAIL',      'contacto@netxia.cl');       // Destino principal (buzón 50webs)
+define('ADMIN_EMAIL_COPY', '');                         // Copia a Gmail de respaldo (≠ remitente netxia.chile@gmail.com)
 
 // ─── Gemini API + fallback local (Chatbot) ───────────────────────────────────
 // Crea una API key gratuita en https://aistudio.google.com/app/apikey
