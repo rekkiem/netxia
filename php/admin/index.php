@@ -383,6 +383,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
+    if ($action === 'retry_lead' && admin_logged_in()) {
+        $view = 'leads';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            $type = ($_POST['lead_type'] ?? '') === 'applications' ? 'applications' : 'requirements';
+            $res = admin_retry_lead($type, (string)($_POST['lead_id'] ?? ''));
+            $flash = $res['msg']; $flashErr = !$res['ok'];
+        }
+    }
+    if ($action === 'probe_token' && admin_logged_in()) {
+        $view = 'mail';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            $p = gmail_probe_token();
+            $flash = $p['msg']; $flashErr = !$p['ok'];
+        }
+    }
+    if ($action === 'test_send' && admin_logged_in()) {
+        $view = 'mail';
+        if (!admin_csrf_ok()) { $flash = 'Token inválido.'; $flashErr = true; }
+        else {
+            try {
+                $mail = create_mailer();
+                netxia_add_admin_recipients($mail, 'Netxia');
+                $mail->Subject = '✅ Test Netxia admin ' . date('H:i:s');
+                $mail->isHTML(true);
+                $mail->Body = '<p>Prueba panel admin — ' . date('c') . '</p>';
+                $mail->AltBody = 'Test Netxia';
+                $via = null; $errors = null;
+                $ok = netxia_send($mail, 'test', $via, $errors);
+                $flash = $ok ? ("OK vía $via → " . implode(', ', netxia_admin_emails())) : ('FALLÓ: ' . $errors);
+                $flashErr = !$ok;
+            } catch (Throwable $e) {
+                $flash = $e->getMessage(); $flashErr = true;
+            }
+        }
+    }
+
 // Load edit form data
 $editPost = [
     'slug' => '', 'titulo' => '', 'resumen' => '', 'categoria' => 'Inteligencia Artificial',
