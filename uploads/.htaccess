@@ -1,0 +1,5 @@
+# No listar, no ejecutar PHP
+Options -Indexes
+<FilesMatch "\.(php|phtml|php3|php4|php5|phar|cgi|pl)$">
+  Require all denied
+</FilesMatch>

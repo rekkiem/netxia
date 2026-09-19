@@ -1,19 +1,34 @@
-# Ignorar configuraciones locales o contraseñas
+# Secretos de producción
 php/config.php
 
-# Ignorar datos dinámicos generados por usuarios/servidor
+# Datos dinámicos de usuarios
 data/requirements/
 data/applications/
 data/sessions/
+data/blog_bodies/
 
-# Conservar blog.json si lo editas local, de lo contrario ignóralo:
-# data/blog.json
+# Subidas
+uploads/cv/*
+!uploads/cv/.gitkeep
 
-# Ignorar archivos subidos (como currículums)
-uploads/cv/
+# Logs
+logs/*
+!logs/.gitkeep
 
-# Ignorar registros de errores
-logs/
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
 
-# Permitir explícitamente los archivos .gitkeep para no romper el servidor
+# Mantener estructura
 !.gitkeep
+
+# Admin rate-limit counters
+data/admin/rl_*.json
+
+php-server.err.log
+php-server.out.log
+php/mail_test.php
+php/net_probe.php
+php/net_probe2.php

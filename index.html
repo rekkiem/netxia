@@ -24,6 +24,8 @@
   <meta property="og:title"       content="Netxia | IA y Ciberseguridad para Empresas Chilenas">
   <meta property="og:description" content="Transformamos tecnología en ventaja competitiva. IA Agéntica, Zero Trust y Cloud para empresas chilenas.">
   <meta property="og:locale"      content="es_CL">
+  <meta property="og:image"       content="https://netxia.cl/assets/img/og-cover.svg">
+  <meta name="twitter:image"      content="https://netxia.cl/assets/img/og-cover.svg">
 
   <!-- Twitter -->
   <meta name="twitter:card"        content="summary_large_image">
@@ -37,7 +39,7 @@
     "@type":"ProfessionalService",
     "name":"Netxia Consultores TI",
     "url":"https://netxia.cl",
-    "logo":"https://netxia.cl/assets/img/netxia-logo.webp",
+    "logo":"https://netxia.cl/assets/img/netxia-logo.svg",
     "foundingDate":"2015",
     "description":"Consultora tecnológica especializada en Inteligencia Artificial, Ciberseguridad y Cloud & DevOps para empresas en Chile",
     "address":{"@type":"PostalAddress","addressLocality":"Santiago","addressRegion":"RM","addressCountry":"CL"},
@@ -463,11 +465,34 @@
     </header>
 
     <div class="blog-grid" id="blogGrid" aria-label="Artículos del blog">
-      <!-- Cargado por JavaScript desde data/blog.json -->
-      <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-2)">
-        <div style="font-size:2rem;margin-bottom:0.5rem">⏳</div>
-        Cargando artículos…
-      </div>
+      <!-- Fallback estático (SEO + noscript). JS lo reemplaza con /php/blog.php -->
+      <article class="blog-card">
+        <div class="blog-card-img" role="img" aria-label="Tendencias de IA"><span style="position:relative;z-index:1">🤖</span></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat">Inteligencia Artificial</span><span class="blog-date">29 de enero de 2026</span></div>
+          <h3>Tendencias de IA 2026 que Toda Empresa Chilena Debe Conocer</h3>
+          <p>IA Agéntica, AutoML y Edge AI están redefiniendo cómo operan las empresas en Chile.</p>
+          <a href="./blog/tendencias-ia-2026.html" class="blog-card-link">Leer artículo →</a>
+        </div>
+      </article>
+      <article class="blog-card">
+        <div class="blog-card-img" role="img" aria-label="Ciberseguridad"><span style="position:relative;z-index:1">🔐</span></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat">Ciberseguridad</span><span class="blog-date">15 de febrero de 2026</span></div>
+          <h3>Ciberseguridad para PYMEs Chilenas: Guía Práctica 2026</h3>
+          <p>El 68% de los ciberataques en Chile afectan a PYMEs. Medidas esenciales con presupuesto acotado.</p>
+          <a href="./blog/ciberseguridad-empresas-chile.html" class="blog-card-link">Leer artículo →</a>
+        </div>
+      </article>
+      <article class="blog-card">
+        <div class="blog-card-img" role="img" aria-label="Cloud"><span style="position:relative;z-index:1">☁️</span></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat">Cloud & DevOps</span><span class="blog-date">10 de marzo de 2026</span></div>
+          <h3>Cloud & DevOps en Chile: Cuándo Migrar y Qué Esperar</h3>
+          <p>Comparativa AWS vs Azure vs GCP para el mercado chileno y costos reales en CLP.</p>
+          <a href="./blog/cloud-devops-chile-2026.html" class="blog-card-link">Leer artículo →</a>
+        </div>
+      </article>
     </div>
 
     <div class="blog-cta reveal">
@@ -751,7 +776,7 @@
 
     <div class="footer-bottom">
       <p>© <span id="yearFooter"></span> Netxia Consultores TI. Todos los derechos reservados. Santiago, Chile.</p>
-      <p style="color:var(--text-3);font-size:0.75rem">RUT: 76.XXX.XXX-X | contacto@netxia.cl</p>
+      <p style="color:var(--text-3);font-size:0.75rem">contacto@netxia.cl · Santiago, Chile</p>
     </div>
   </div>
 </footer>
@@ -793,7 +818,7 @@
 </div>
 
 <!-- Scripts -->
-<script src="./js/main.js?v=2" defer></script>
-<script src="./js/chatbot.js?v=2" defer></script>
+<script src="./js/main.js?v=3" defer></script>
+<script src="./js/chatbot.js?v=3" defer></script>
 </body>
 </html>

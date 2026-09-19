@@ -59,12 +59,14 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
   const toggle = () => {
     const open = btn.classList.toggle('open');
     nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
     document.body.style.overflow = open ? 'hidden' : '';
   };
   on(btn, 'click', toggle);
   $$('.mobile-nav a').forEach(a => on(a, 'click', () => {
     btn.classList.remove('open');
     nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }));
 })();
@@ -156,46 +158,95 @@ const on = (el, ev, fn) => el?.addEventListener(ev, fn);
 })();
 
 // ── Blog loader ─────────────────────────────────────────────────────────
+// data/ está bloqueado por .htaccess → se usa el proxy PHP /php/blog.php
 (function initBlog() {
   const grid = $('#blogGrid');
   if (!grid) return;
 
-  fetch('./data/blog.json')
-    .then(r => r.json())
-    .then(articles => {
-      const icons = { 'Inteligencia Artificial': '🤖', 'Ciberseguridad': '🔐', 'Cloud & DevOps': '☁️' };
-      grid.innerHTML = articles.map((a, i) => `
-        <article class="blog-card reveal reveal-delay-${i+1}">
-          <div class="blog-card-img" role="img" aria-label="${a.imagen_alt}">
-            <span style="position:relative;z-index:1">${icons[a.categoria] || '📝'}</span>
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-meta">
-              <span class="blog-cat">${a.categoria}</span>
-              <span class="blog-date">${formatDate(a.fecha)}</span>
-            </div>
-            <h3>${a.titulo}</h3>
-            <p>${a.resumen}</p>
-            <a href="${a.url}" class="blog-card-link" aria-label="Leer: ${a.titulo}">
-              Leer artículo <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </article>
-      `).join('');
-      // Re-observe new elements
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-      }, { threshold: 0.12 });
-      $$('.blog-card.reveal').forEach(el => io.observe(el));
-    })
-    .catch(() => {
-      grid.innerHTML = '<p style="color:var(--text-2);text-align:center">No se pudo cargar el blog.</p>';
-    });
+  const icons = {
+    'Inteligencia Artificial': '🤖',
+    'Ciberseguridad': '🔐',
+    'Cloud & DevOps': '☁️',
+  };
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
 
   function formatDate(str) {
-    const d = new Date(str);
-    return d.toLocaleDateString('es-CL', { day:'numeric', month:'long', year:'numeric' });
+    const d = new Date(str + (String(str).length === 10 ? 'T12:00:00' : ''));
+    if (Number.isNaN(d.getTime())) return str;
+    return d.toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' });
   }
+
+  function articleUrl(a) {
+    const slug = String(a.slug || '').trim();
+    if (/^[a-z0-9-]+$/i.test(slug)) return './blog/' + slug + '.html';
+
+    const url = String(a.url || '').trim();
+    const m = url.match(/(?:^|\/)blog\/([a-z0-9-]+)\.html$/i);
+    if (m) return './blog/' + m[1] + '.html';
+
+    return '#';
+  }
+
+  function render(articles) {
+    const list = (articles || []).filter(a => a.publicado !== false).slice(0, 6);
+    if (!list.length) {
+      grid.innerHTML = '<p style="color:var(--text-2);text-align:center">Pronto publicaremos nuevos artículos.</p>';
+      return;
+    }
+    grid.innerHTML = list.map((a, i) => `
+      <article class="blog-card reveal reveal-delay-${(i % 3) + 1}">
+        <div class="blog-card-img" role="img" aria-label="${escapeHtml(a.imagen_alt || a.titulo)}">
+          <span style="position:relative;z-index:1">${icons[a.categoria] || '📝'}</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span class="blog-cat">${escapeHtml(a.categoria || 'Blog')}</span>
+            <span class="blog-date">${escapeHtml(formatDate(a.fecha))}</span>
+          </div>
+          <h3>${escapeHtml(a.titulo)}</h3>
+          <p>${escapeHtml(a.resumen || '')}</p>
+          <a href="${escapeHtml(articleUrl(a))}" class="blog-card-link" aria-label="Leer: ${escapeHtml(a.titulo)}">
+            Leer artículo <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+    `).join('');
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    $$('.blog-card.reveal').forEach(el => io.observe(el));
+  }
+
+  // Primary: PHP proxy (works even when /data/ is forbidden)
+  // Fallback: direct JSON (local dev if data/ is public)
+  fetch('./php/blog.php', { credentials: 'same-origin' })
+    .then(r => {
+      if (!r.ok) throw new Error('blog.php ' + r.status);
+      return r.json();
+    })
+    .then(render)
+    .catch(() => {
+      fetch('./data/blog.json')
+        .then(r => {
+          if (!r.ok) throw new Error('blog.json ' + r.status);
+          return r.json();
+        })
+        .then(render)
+        .catch(() => {
+          grid.innerHTML = '<p style="color:var(--text-2);text-align:center">No se pudo cargar el blog. <a href="./blog/" style="color:var(--cyan)">Ver blog →</a></p>';
+        });
+    });
 })();
 
 // ── Requirements multi-step form ─────────────────────────────────────────
