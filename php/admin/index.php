@@ -257,7 +257,7 @@ function admin_retry_lead(string $type, string $id): array {
 $flash = '';
 $flashErr = false;
 $leadFilter = $_GET['filter'] ?? 'all';
-$view  = $_GET['view'] ?? (admin_logged_in() ? 'list' : 'login');
+$view  = $_GET['view'] ?? (admin_logged_in() ? 'leads' : 'login');
 $editSlug = $_GET['slug'] ?? '';
 
 // ── Actions ──────────────────────────────────────────────────────────
