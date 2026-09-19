@@ -7,6 +7,7 @@ ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 error_reporting(E_ERROR);
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mailer.php';
 netxia_session_start();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -101,7 +102,7 @@ log_event('jobs', "Guardado: $nombre — $cargo — $email");
 
 // Enviar email vía Gmail SMTP
 $emailNote = '';
-if (empty(SMTP_PASS)) {
+if (empty(SMTP_PASS) && !gmail_api_configured()) {
     $emailNote = IS_LOCAL ? ' [Dev: SMTP_PASS vacío]' : '';
     log_event('jobs', 'SMTP_PASS vacío', 'WARN');
 } else {
@@ -130,8 +131,8 @@ if (empty(SMTP_PASS)) {
   <p style='margin-top:16px;color:#8B9DC3;font-size:12px'>" . ($cv_filename ? "CV adjunto: $cv_filename" : "Sin CV adjunto") . " | " . date('d/m/Y H:i:s') . "</p>
 </div>";
         $mail->AltBody = "Postulación de $nombre para $cargo\nEmail: $email\nCarta: $carta";
-        $mail->send();
-        log_event('jobs', 'Email Gmail OK → ' . ADMIN_EMAIL);
+        $sent = netxia_send($mail, 'jobs', $via, $sendErrors);
+        if (!$sent) $emailNote = IS_LOCAL ? " [Dev: Error Gmail — $sendErrors]" : '';
     } catch (\Exception $e) {
         $err = $e->getMessage();
         log_event('jobs', "Gmail ERROR: $err", 'WARN');

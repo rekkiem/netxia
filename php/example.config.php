@@ -32,6 +32,12 @@ define('CHATBOT_LOCAL_FALLBACK', true);
 // También acepta texto plano fuerte (solo setup). Nunca dejes el placeholder.
 define('BLOG_ADMIN_PASS', '');
 
+// ─── Gmail API (envío por HTTPS — el hosting bloquea SMTP) ───────────────────
+// Ver HOTFIX_MAIL.md para obtener estos 3 valores (una sola vez, ~10 min).
+define('GMAIL_CLIENT_ID',     '');   // ...apps.googleusercontent.com
+define('GMAIL_CLIENT_SECRET', '');
+define('GMAIL_REFRESH_TOKEN', '');   // 1//0g...
+
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 define('RATE_LIMIT_CONTACT', 5);   // envíos/hora por IP
 define('RATE_LIMIT_JOB',     3);   // postulaciones/hora por IP
